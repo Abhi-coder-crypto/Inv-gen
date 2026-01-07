@@ -7,11 +7,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertCompanySchema } from "@shared/schema";
 import type { InsertCompany } from "@shared/schema";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Upload, X, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Settings() {
   const { data: company, isLoading } = useCompany();
   const { mutate: updateCompany, isPending } = useUpdateCompany();
+  const { toast } = useToast();
+  const [uploading, setUploading] = useState<string | null>(null);
 
   const form = useForm<InsertCompany>({
     resolver: zodResolver(insertCompanySchema),
@@ -42,6 +46,36 @@ export default function Settings() {
     }
   }, [company, form]);
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, field: "logoUrl" | "qrCodeUrl") => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(field);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+
+      const { url } = await res.json();
+      form.setValue(field, url);
+      toast({ title: "Success", description: "Image uploaded successfully" });
+    } catch (error) {
+      toast({ 
+        title: "Error", 
+        description: "Failed to upload image. Please try again.",
+        variant: "destructive" 
+      });
+    } finally {
+      setUploading(null);
+    }
+  };
+
   const onSubmit = (data: InsertCompany) => {
     updateCompany(data);
   };
@@ -63,24 +97,40 @@ export default function Settings() {
               <CardDescription>These details will appear on your invoices.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-4 items-start mb-6">
-                <FormField
-                  control={form.control}
-                  name="logoUrl"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Company Logo URL</FormLabel>
-                      <FormControl><Input {...field} placeholder="https://..." value={field.value || ''} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {form.watch("logoUrl") && (
-                  <div className="h-16 w-16 border rounded bg-muted flex items-center justify-center overflow-hidden">
-                    <img src={form.watch("logoUrl")!} alt="Logo" className="max-h-full max-w-full object-contain" />
+              <div className="mb-6">
+                <FormLabel>Company Logo</FormLabel>
+                <div className="mt-2 flex items-center gap-4">
+                  <div className="h-24 w-24 border rounded bg-muted flex items-center justify-center overflow-hidden">
+                    {form.watch("logoUrl") ? (
+                      <div className="relative group w-full h-full">
+                        <img src={form.watch("logoUrl")!} alt="Logo" className="w-full h-full object-contain" />
+                        <button
+                          type="button"
+                          onClick={() => form.setValue("logoUrl", "")}
+                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                        >
+                          <X className="h-6 w-6 text-white" />
+                        </button>
+                      </div>
+                    ) : (
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                    )}
                   </div>
-                )}
+                  <div className="flex-1">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, "logoUrl")}
+                      disabled={!!uploading}
+                      className="cursor-pointer"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {uploading === "logoUrl" ? "Uploading..." : "Recommended size: 200x200px. Max 5MB."}
+                    </p>
+                  </div>
+                </div>
               </div>
+
               <FormField
                 control={form.control}
                 name="name"
@@ -208,24 +258,41 @@ export default function Settings() {
                   )}
                 />
               </div>
-              <div className="flex gap-4 items-start">
-                <FormField
-                  control={form.control}
-                  name="qrCodeUrl"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <FormLabel>Payment QR Code URL</FormLabel>
-                      <FormControl><Input {...field} placeholder="https://..." value={field.value || ''} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                {form.watch("qrCodeUrl") && (
-                  <div className="h-16 w-16 border rounded bg-muted flex items-center justify-center overflow-hidden">
-                    <img src={form.watch("qrCodeUrl")!} alt="QR Code" className="max-h-full max-w-full object-contain" />
+
+              <div className="mt-6">
+                <FormLabel>Payment QR Code</FormLabel>
+                <div className="mt-2 flex items-center gap-4">
+                  <div className="h-32 w-32 border rounded bg-muted flex items-center justify-center overflow-hidden">
+                    {form.watch("qrCodeUrl") ? (
+                      <div className="relative group w-full h-full">
+                        <img src={form.watch("qrCodeUrl")!} alt="QR Code" className="w-full h-full object-contain" />
+                        <button
+                          type="button"
+                          onClick={() => form.setValue("qrCodeUrl", "")}
+                          className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                        >
+                          <X className="h-6 w-6 text-white" />
+                        </button>
+                      </div>
+                    ) : (
+                      <Upload className="h-10 w-10 text-muted-foreground" />
+                    )}
                   </div>
-                )}
+                  <div className="flex-1">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, "qrCodeUrl")}
+                      disabled={!!uploading}
+                      className="cursor-pointer"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {uploading === "qrCodeUrl" ? "Uploading..." : "Upload your UPI or bank QR code. Max 5MB."}
+                    </p>
+                  </div>
+                </div>
               </div>
+
               <FormField
                 control={form.control}
                 name="paymentTerms"
@@ -234,9 +301,10 @@ export default function Settings() {
                     <FormLabel>Payment Terms & Conditions</FormLabel>
                     <FormControl>
                       <textarea 
-                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         {...field} 
                         value={field.value || ''} 
+                        placeholder="e.g. Please pay within 15 days. Make cheques payable to..."
                       />
                     </FormControl>
                     <FormMessage />
@@ -246,8 +314,13 @@ export default function Settings() {
             </CardContent>
           </Card>
 
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : "Save Changes"}
+          <Button type="submit" disabled={isPending || !!uploading} className="w-full md:w-auto">
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : "Save Changes"}
           </Button>
         </form>
       </Form>
