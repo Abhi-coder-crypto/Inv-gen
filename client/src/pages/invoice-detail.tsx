@@ -155,38 +155,44 @@ export default function InvoiceDetail() {
 
           {/* Footer */}
           {(company?.bankName || company?.qrCodeUrl || company?.paymentTerms || invoice.notes) && (
-            <div className="bg-muted/30 p-8 border-t border-border">
-              <div className="grid md:grid-cols-2 gap-8 text-sm">
+            <div className="p-8 border-t border-border/50 bg-secondary/5 mt-auto">
+              <div className="grid md:grid-cols-2 gap-8 items-end">
                 <div>
-                  {company?.bankName && (
-                    <div className="mb-4">
-                      <h4 className="font-bold mb-2">Payment Details</h4>
-                      <p><span className="text-muted-foreground">Bank:</span> {company.bankName}</p>
-                      <p><span className="text-muted-foreground">Account:</span> {company.accountNumber}</p>
-                      <p><span className="text-muted-foreground">IFSC:</span> {company.ifsc}</p>
-                      {company.upiId && <p><span className="text-muted-foreground">UPI ID:</span> {company.upiId}</p>}
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Payment Details</h3>
+                  <div className="space-y-3">
+                    <div className="flex gap-4 items-start">
+                      {company?.qrCodeUrl && (
+                        <div className="bg-white p-2 rounded-lg border shadow-sm">
+                          <img src={company.qrCodeUrl} alt="Payment QR" className="h-28 w-28 object-contain" />
+                          <p className="text-[10px] text-center text-muted-foreground mt-1 font-medium">Scan to Pay</p>
+                        </div>
+                      )}
+                      <div className="space-y-1">
+                        {company?.bankName && <p className="text-sm font-semibold text-primary">{company.bankName}</p>}
+                        {company?.accountName && <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">Acc Name:</span> {company.accountName}</p>}
+                        {company?.accountNumber && <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">Acc No:</span> {company.accountNumber}</p>}
+                        {(company as any)?.ifscCode && <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">IFSC:</span> {(company as any).ifscCode}</p>}
+                        {(company as any)?.upiId && <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">UPI:</span> {(company as any).upiId}</p>}
+                      </div>
                     </div>
-                  )}
-                  {company?.qrCodeUrl && (
-                    <div className="mt-4">
-                      <h4 className="font-bold mb-2">Scan to Pay</h4>
-                      <img src={company.qrCodeUrl} alt="Payment QR" className="h-32 w-32 border bg-white p-2 rounded" />
-                    </div>
-                  )}
+                  </div>
                 </div>
                 <div className="space-y-4">
                   {invoice.notes && (
-                    <div>
-                      <h4 className="font-bold mb-2">Notes</h4>
-                      <p className="text-muted-foreground whitespace-pre-wrap">{invoice.notes}</p>
+                    <div className="mb-4">
+                      <h4 className="text-xs font-bold text-muted-foreground mb-1 uppercase tracking-widest">Notes</h4>
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{invoice.notes}</p>
                     </div>
                   )}
                   {company?.paymentTerms && (
-                    <div>
-                      <h4 className="font-bold mb-2">Terms & Conditions</h4>
-                      <p className="text-xs text-muted-foreground whitespace-pre-wrap">{company.paymentTerms}</p>
+                    <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
+                      <h3 className="text-xs font-bold text-primary mb-2 uppercase tracking-widest">Terms & Conditions</h3>
+                      <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{company.paymentTerms}</p>
                     </div>
                   )}
+                  <div className="text-right pt-4 border-t border-border/50">
+                    <p className="text-xs text-muted-foreground italic">Thank you for your business!</p>
+                  </div>
                 </div>
               </div>
             </div>
