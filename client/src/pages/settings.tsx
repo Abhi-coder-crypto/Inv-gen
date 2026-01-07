@@ -17,7 +17,8 @@ export default function Settings() {
     resolver: zodResolver(insertCompanySchema),
     defaultValues: {
       name: "", address: "", email: "", phone: "", website: "",
-      gst: "", bankName: "", accountNumber: "", ifsc: "", upiId: ""
+      gst: "", bankName: "", accountNumber: "", ifsc: "", upiId: "",
+      logoUrl: "", qrCodeUrl: "", paymentTerms: ""
     }
   });
 
@@ -34,6 +35,9 @@ export default function Settings() {
         accountNumber: company.accountNumber || "",
         ifsc: company.ifsc || "",
         upiId: company.upiId || "",
+        logoUrl: company.logoUrl || "",
+        qrCodeUrl: company.qrCodeUrl || "",
+        paymentTerms: company.paymentTerms || "",
       });
     }
   }, [company, form]);
@@ -59,6 +63,24 @@ export default function Settings() {
               <CardDescription>These details will appear on your invoices.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="flex gap-4 items-start mb-6">
+                <FormField
+                  control={form.control}
+                  name="logoUrl"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Company Logo URL</FormLabel>
+                      <FormControl><Input {...field} placeholder="https://..." value={field.value || ''} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {form.watch("logoUrl") && (
+                  <div className="h-16 w-16 border rounded bg-muted flex items-center justify-center overflow-hidden">
+                    <img src={form.watch("logoUrl")!} alt="Logo" className="max-h-full max-w-full object-contain" />
+                  </div>
+                )}
+              </div>
               <FormField
                 control={form.control}
                 name="name"
@@ -186,6 +208,41 @@ export default function Settings() {
                   )}
                 />
               </div>
+              <div className="flex gap-4 items-start">
+                <FormField
+                  control={form.control}
+                  name="qrCodeUrl"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Payment QR Code URL</FormLabel>
+                      <FormControl><Input {...field} placeholder="https://..." value={field.value || ''} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {form.watch("qrCodeUrl") && (
+                  <div className="h-16 w-16 border rounded bg-muted flex items-center justify-center overflow-hidden">
+                    <img src={form.watch("qrCodeUrl")!} alt="QR Code" className="max-h-full max-w-full object-contain" />
+                  </div>
+                )}
+              </div>
+              <FormField
+                control={form.control}
+                name="paymentTerms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Payment Terms & Conditions</FormLabel>
+                    <FormControl>
+                      <textarea 
+                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        {...field} 
+                        value={field.value || ''} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
 

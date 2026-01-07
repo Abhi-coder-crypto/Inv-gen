@@ -24,6 +24,8 @@ export const companies = pgTable("companies", {
   ifsc: text("ifsc"),
   upiId: text("upi_id"),
   logoUrl: text("logo_url"),
+  qrCodeUrl: text("qr_code_url"),
+  paymentTerms: text("payment_terms"),
 });
 
 export const clients = pgTable("clients", {

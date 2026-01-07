@@ -114,12 +114,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createInvoice(insertInvoice: InsertInvoice): Promise<Invoice> {
-    const [invoice] = await db.insert(invoices).values(insertInvoice).returning();
+    const [invoice] = await db.insert(invoices).values(insertInvoice as any).returning();
     return invoice;
   }
 
   async updateInvoice(id: number, updates: Partial<InsertInvoice>): Promise<Invoice> {
-    const [updated] = await db.update(invoices).set(updates).where(eq(invoices.id, id)).returning();
+    const [updated] = await db.update(invoices).set(updates as any).where(eq(invoices.id, id)).returning();
     return updated;
   }
 }

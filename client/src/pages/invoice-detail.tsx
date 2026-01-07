@@ -50,10 +50,14 @@ export default function InvoiceDetail() {
           <div className="bg-primary/5 p-8 border-b border-border/50">
             <div className="flex justify-between items-start">
               <div className="space-y-1">
-                 {/* Company Logo placeholder - Use Initials if no logo */}
-                <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl mb-4">
-                  {company?.name ? company.name.charAt(0) : "I"}
-                </div>
+                 {/* Company Logo */}
+                {company?.logoUrl ? (
+                  <img src={company.logoUrl} alt={company.name} className="h-16 w-auto mb-4 object-contain" />
+                ) : (
+                  <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl mb-4">
+                    {company?.name ? company.name.charAt(0) : "I"}
+                  </div>
+                )}
                 <h1 className="text-2xl font-bold text-primary">{company?.name || "Your Company"}</h1>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{company?.address}</p>
                 <p className="text-sm text-muted-foreground">{company?.email}</p>
@@ -98,7 +102,7 @@ export default function InvoiceDetail() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
-                {invoice.items.map((item, index) => (
+                {invoice.items.map((item: any, index: number) => (
                   <tr key={index}>
                     <td className="py-4 font-medium">{item.description}</td>
                     <td className="py-4 text-center">{item.quantity}</td>
@@ -134,23 +138,40 @@ export default function InvoiceDetail() {
           </div>
 
           {/* Footer */}
-          {(company?.bankName || invoice.notes) && (
+          {(company?.bankName || company?.qrCodeUrl || company?.paymentTerms || invoice.notes) && (
             <div className="bg-muted/30 p-8 border-t border-border">
               <div className="grid md:grid-cols-2 gap-8 text-sm">
-                {company?.bankName && (
-                  <div>
-                    <h4 className="font-bold mb-2">Payment Details</h4>
-                    <p><span className="text-muted-foreground">Bank:</span> {company.bankName}</p>
-                    <p><span className="text-muted-foreground">Account:</span> {company.accountNumber}</p>
-                    <p><span className="text-muted-foreground">IFSC:</span> {company.ifsc}</p>
-                  </div>
-                )}
-                {invoice.notes && (
-                  <div>
-                    <h4 className="font-bold mb-2">Notes</h4>
-                    <p className="text-muted-foreground">{invoice.notes}</p>
-                  </div>
-                )}
+                <div>
+                  {company?.bankName && (
+                    <div className="mb-4">
+                      <h4 className="font-bold mb-2">Payment Details</h4>
+                      <p><span className="text-muted-foreground">Bank:</span> {company.bankName}</p>
+                      <p><span className="text-muted-foreground">Account:</span> {company.accountNumber}</p>
+                      <p><span className="text-muted-foreground">IFSC:</span> {company.ifsc}</p>
+                      {company.upiId && <p><span className="text-muted-foreground">UPI ID:</span> {company.upiId}</p>}
+                    </div>
+                  )}
+                  {company?.qrCodeUrl && (
+                    <div className="mt-4">
+                      <h4 className="font-bold mb-2">Scan to Pay</h4>
+                      <img src={company.qrCodeUrl} alt="Payment QR" className="h-32 w-32 border bg-white p-2 rounded" />
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-4">
+                  {invoice.notes && (
+                    <div>
+                      <h4 className="font-bold mb-2">Notes</h4>
+                      <p className="text-muted-foreground whitespace-pre-wrap">{invoice.notes}</p>
+                    </div>
+                  )}
+                  {company?.paymentTerms && (
+                    <div>
+                      <h4 className="font-bold mb-2">Terms & Conditions</h4>
+                      <p className="text-xs text-muted-foreground whitespace-pre-wrap">{company.paymentTerms}</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
