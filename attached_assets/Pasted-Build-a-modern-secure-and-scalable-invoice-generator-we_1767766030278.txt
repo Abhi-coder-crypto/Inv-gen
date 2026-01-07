@@ -1,0 +1,287 @@
+Build a modern, secure, and scalable invoice generator web application for my company that allows professional invoice creation, client-wise invoice management, payment tracking, and export/share functionality, using React (Frontend), Node.js + Express (Backend), and MongoDB (Database).
+
+🧩 Core Modules & Features
+1️⃣ Authentication & Roles
+
+Secure Login / Signup (JWT-based)
+
+Roles:
+
+Admin
+
+Staff (optional)
+
+Password encryption (bcrypt)
+
+Session handling & auto logout
+
+2️⃣ Company Profile Setup (Header Section)
+
+Used automatically in every invoice
+
+Company Logo upload
+
+Company Name
+
+Address
+
+GST / Tax Number
+
+Phone Number
+
+Email
+
+Website
+
+Bank Details:
+
+Bank Name
+
+Account Number
+
+IFSC
+
+UPI ID
+
+Auto-generated Payment QR Code
+
+Editable settings (saved once, reusable)
+
+3️⃣ Client Management System
+
+Create Client Folder
+
+Client Details:
+
+Client Logo
+
+Company / Individual Name
+
+Address
+
+Phone
+
+Email
+
+GST Number (optional)
+
+Each client has:
+
+Dedicated Invoice History
+
+Total Billed Amount
+
+Paid / Pending Status
+
+Search & filter clients
+
+Client-wise invoice export (ZIP / PDF)
+
+4️⃣ Invoice Creation Engine
+Invoice Header
+
+Auto Invoice Number (INV-0001)
+
+Invoice Date
+
+Day & Time (auto)
+
+Billing Month (dropdown)
+
+Due Date
+
+Client Details (auto-filled from client folder)
+
+Invoice Body
+
+Add multiple line items:
+
+Service / Product Name
+
+Description
+
+Quantity
+
+Rate
+
+Tax %
+
+Amount (auto-calculated)
+
+Discount (flat / %)
+
+Subtotal, Tax, Grand Total (auto)
+
+Invoice Footer
+
+Payment QR Code
+
+Bank Details
+
+Notes / Terms & Conditions
+
+Authorized Signature (upload / digital)
+
+5️⃣ Invoice Storage & Client-wise Organization
+
+Each invoice:
+
+Linked to one client
+
+Stored under client’s folder
+
+MongoDB Structure:
+
+Company → Clients → Invoices
+
+Tags:
+
+Paid
+
+Pending
+
+Overdue
+
+Invoice version history (optional)
+
+6️⃣ PDF Generation & Sharing
+
+One-click Professional PDF Export
+
+Custom invoice template
+
+Download PDF
+
+Email invoice directly to client
+
+WhatsApp share link
+
+Cloud storage option (AWS / Cloudinary)
+
+7️⃣ Payment Tracking
+
+Mark invoice as:
+
+Paid
+
+Partial Paid
+
+Pending
+
+Payment Mode:
+
+UPI
+
+Bank Transfer
+
+Cash
+
+Payment Date & Reference ID
+
+Auto outstanding balance calculation
+
+8️⃣ Dashboard & Analytics
+
+Monthly revenue summary
+
+Client-wise revenue
+
+Pending payments overview
+
+Invoice count (monthly/yearly)
+
+Graphs & charts (Recharts / Chart.js)
+
+9️⃣ Search, Filter & Automation
+
+Filter invoices by:
+
+Client
+
+Month
+
+Status
+
+Amount
+
+Global search (invoice no / client name)
+
+Auto reminders for unpaid invoices (email)
+
+🔐 Security & Performance
+
+JWT authentication
+
+Role-based access control
+
+Input validation
+
+Rate limiting
+
+MongoDB indexing
+
+Secure file uploads
+
+🎨 UI / UX Expectations
+
+Clean, professional UI
+
+Light & Dark mode
+
+Responsive (Desktop + Tablet)
+
+Invoice preview before save
+
+Drag & drop logo upload
+
+Smooth animations
+
+🛠️ Tech Stack
+
+Frontend
+
+React + Vite
+
+Tailwind CSS / Material UI
+
+Axios
+
+React Router
+
+Backend
+
+Node.js
+
+Express.js
+
+JWT Authentication
+
+Database
+
+MongoDB (Mongoose)
+
+Extras
+
+QR Code Generator
+
+PDF generation (Puppeteer / PDFKit)
+
+Email (Nodemailer)
+
+🔮 Future Enhancements
+
+Multi-company support
+
+GST reports
+
+Recurring invoices
+
+Multi-currency support
+
+Invoice templates
+
+Mobile App (React Native)
+
+📌 Final Goal
+
+A production-ready, scalable invoice management system that looks premium, reduces manual work, organizes invoices client-wise, and supports real-world business payments.
