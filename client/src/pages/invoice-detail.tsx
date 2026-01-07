@@ -88,11 +88,11 @@ export default function InvoiceDetail() {
           <div className="p-10 grid md:grid-cols-2 gap-12 border-b">
             <div className="space-y-4">
               <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Bill To</h3>
-              <div className="flex gap-6 items-start">
+              <div className="flex gap-10 items-start">
                 {(invoice.client as any).logoUrl ? (
-                  <img src={(invoice.client as any).logoUrl} alt={invoice.client.name} className="h-16 w-16 object-contain bg-white p-1.5 rounded border shadow-sm" />
+                  <img src={(invoice.client as any).logoUrl} alt={invoice.client.name} className="h-40 w-auto object-contain" />
                 ) : (
-                  <div className="h-14 w-14 bg-slate-100 rounded flex items-center justify-center text-slate-400 font-bold text-2xl border">
+                  <div className="h-24 w-24 bg-slate-100 rounded flex items-center justify-center text-slate-400 font-bold text-4xl border">
                     {invoice.client.name.charAt(0)}
                   </div>
                 )}
