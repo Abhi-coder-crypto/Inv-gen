@@ -8,19 +8,61 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertClientSchema } from "@shared/schema";
-import { Search, Plus, User, Phone, Mail, MapPin } from "lucide-react";
+import { Search, Plus, User, Phone, Mail, MapPin, Upload, Briefcase, Building2 } from "lucide-react";
 import type { InsertClient } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Clients() {
   const { data: clients, isLoading } = useClients();
   const { mutate: createClient, isPending } = useCreateClient();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
+  const [uploading, setUploading] = useState(false);
 
   const form = useForm<InsertClient>({
     resolver: zodResolver(insertClientSchema),
-    defaultValues: { name: "", email: "", phone: "", address: "", gst: "" }
+    defaultValues: { 
+      name: "", 
+      companyName: "",
+      serviceName: "",
+      email: "", 
+      phone: "", 
+      address: "", 
+      gst: "",
+      logoUrl: ""
+    }
   });
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+
+      const { url } = await res.json();
+      form.setValue("logoUrl", url);
+      toast({ title: "Success", description: "Logo uploaded successfully" });
+    } catch (error) {
+      toast({ 
+        title: "Error", 
+        description: "Failed to upload logo",
+        variant: "destructive" 
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const onSubmit = (data: InsertClient) => {
     createClient(data, {
@@ -56,13 +98,54 @@ export default function Clients() {
             </DialogHeader>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="h-20 w-20 border rounded bg-muted flex items-center justify-center overflow-hidden">
+                    {form.watch("logoUrl") ? (
+                      <img src={form.watch("logoUrl")!} alt="Client Logo" className="w-full h-full object-contain" />
+                    ) : (
+                      <Upload className="h-8 w-8 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <FormLabel>Client Logo</FormLabel>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="cursor-pointer text-xs"
+                    />
+                  </div>
+                </div>
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>Client Name</FormLabel>
                       <FormControl><Input {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl><Input {...field} value={field.value || ''} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="serviceName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Provided</FormLabel>
+                      <FormControl><Input {...field} value={field.value || ''} placeholder="e.g. Digital Marketing" /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -137,15 +220,27 @@ export default function Clients() {
           <Card key={client.id} className="hover:border-primary/50 transition-colors cursor-pointer group">
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <User className="h-5 w-5" />
+                <div className="h-12 w-12 rounded-lg bg-secondary flex items-center justify-center text-secondary-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors overflow-hidden">
+                  {client.logoUrl ? (
+                    <img src={client.logoUrl} alt={client.name} className="w-full h-full object-contain" />
+                  ) : (
+                    <User className="h-6 w-6" />
+                  )}
                 </div>
-                <div>
-                  <h4 className="font-semibold">{client.name}</h4>
-                  <p className="text-xs text-muted-foreground">ID: #{client.id}</p>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold truncate">{client.name}</h4>
+                  {client.companyName && (
+                    <p className="text-xs text-primary font-medium truncate">{client.companyName}</p>
+                  )}
+                  <p className="text-[10px] text-muted-foreground">ID: #{client.id}</p>
                 </div>
               </div>
               <div className="space-y-2 text-sm text-muted-foreground">
+                {client.serviceName && (
+                  <div className="flex items-center gap-2 text-foreground font-medium bg-primary/5 p-2 rounded-md">
+                    <Briefcase className="h-3 w-3" /> {client.serviceName}
+                  </div>
+                )}
                 {client.email && (
                   <div className="flex items-center gap-2">
                     <Mail className="h-3 w-3" /> {client.email}
