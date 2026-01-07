@@ -49,18 +49,22 @@ export default function InvoiceDetail() {
           {/* Header */}
           <div className="bg-primary/5 p-8 border-b border-border/50">
             <div className="flex justify-between items-start">
-              <div className="space-y-1">
-                 {/* Company Logo */}
+              <div className="flex gap-6 items-start">
                 {company?.logoUrl ? (
-                  <img src={company.logoUrl} alt={company.name} className="h-16 w-auto mb-4 object-contain" />
+                  <img src={company.logoUrl} alt={company.name} className="h-20 w-auto object-contain bg-white p-1 rounded border" />
                 ) : (
-                  <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xl mb-4">
+                  <div className="h-16 w-16 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-2xl">
                     {company?.name ? company.name.charAt(0) : "I"}
                   </div>
                 )}
-                <h1 className="text-2xl font-bold text-primary">{company?.name || "Your Company"}</h1>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{company?.address}</p>
-                <p className="text-sm text-muted-foreground">{company?.email}</p>
+                <div className="space-y-1">
+                  <h1 className="text-2xl font-bold text-primary">{company?.name || "Your Company"}</h1>
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap max-w-xs">{company?.address}</p>
+                  {company?.phone && <p className="text-sm text-muted-foreground">Phone: {company.phone}</p>}
+                  {company?.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
+                  {company?.website && <p className="text-sm text-muted-foreground">{company.website}</p>}
+                  {company?.gst && <p className="text-sm text-muted-foreground font-medium uppercase">GST: {company.gst}</p>}
+                </div>
               </div>
               <div className="text-right space-y-1">
                 <h2 className="text-4xl font-display font-bold text-foreground/20 tracking-wider">INVOICE</h2>
@@ -73,11 +77,23 @@ export default function InvoiceDetail() {
 
           {/* Client Info */}
           <div className="p-8 grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">Bill To</h3>
-              <p className="font-bold text-lg">{invoice.client.name}</p>
-              {invoice.client.address && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{(invoice.client as any).address}</p>}
-              {invoice.client.email && <p className="text-sm text-muted-foreground mt-1">{(invoice.client as any).email}</p>}
+            <div className="flex gap-4 items-start">
+              {invoice.client.logoUrl ? (
+                <img src={invoice.client.logoUrl} alt={invoice.client.name} className="h-14 w-14 object-contain bg-white p-1 rounded border" />
+              ) : (
+                <div className="h-12 w-12 bg-secondary rounded-lg flex items-center justify-center text-secondary-foreground font-bold text-xl">
+                  {invoice.client.name.charAt(0)}
+                </div>
+              )}
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-1 uppercase tracking-wide">Bill To</h3>
+                <p className="font-bold text-lg leading-tight">{invoice.client.name}</p>
+                {(invoice.client as any).companyName && <p className="text-sm font-medium text-primary">{(invoice.client as any).companyName}</p>}
+                {(invoice.client as any).serviceName && <p className="text-xs italic text-muted-foreground mb-1">Service: {(invoice.client as any).serviceName}</p>}
+                {(invoice.client as any).address && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{(invoice.client as any).address}</p>}
+                {(invoice.client as any).email && <p className="text-sm text-muted-foreground mt-1">{(invoice.client as any).email}</p>}
+                {(invoice.client as any).phone && <p className="text-sm text-muted-foreground">{(invoice.client as any).phone}</p>}
+              </div>
             </div>
             <div className="text-right">
               <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">Payment Status</h3>
