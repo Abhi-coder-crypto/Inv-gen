@@ -125,7 +125,7 @@ export default function Settings() {
                       className="cursor-pointer"
                     />
                     <p className="text-xs text-muted-foreground mt-2">
-                      {uploading === "logoUrl" ? "Uploading..." : "Recommended size: 200x200px. Max 5MB."}
+                      {uploading === "logoUrl" ? "Uploading..." : "Recommended size: 500x500px. Max 5MB."}
                     </p>
                   </div>
                 </div>
