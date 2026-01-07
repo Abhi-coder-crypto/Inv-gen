@@ -47,13 +47,13 @@ export default function InvoiceDetail() {
       <Card className="print-content overflow-hidden">
         <CardContent className="p-0">
           {/* Header */}
-          <div className="bg-slate-50 p-10 border-b">
+          <div className="bg-white p-10 border-b">
             <div className="flex justify-between items-start">
-              <div className="flex gap-8 items-start">
+              <div className="flex gap-10 items-start">
                 {company?.logoUrl ? (
-                  <img src={company.logoUrl} alt={company.name} className="h-24 w-auto object-contain bg-white p-2 rounded shadow-sm border" />
+                  <img src={company.logoUrl} alt={company.name} className="h-32 w-auto object-contain bg-white p-2 rounded shadow-sm border" />
                 ) : (
-                  <div className="h-20 w-20 bg-primary rounded flex items-center justify-center text-primary-foreground font-bold text-3xl">
+                  <div className="h-24 w-24 bg-primary rounded flex items-center justify-center text-primary-foreground font-bold text-4xl">
                     {company?.name ? company.name.charAt(0) : "I"}
                   </div>
                 )}
@@ -135,8 +135,8 @@ export default function InvoiceDetail() {
                   <tr key={index} className="group hover:bg-slate-50 transition-colors">
                     <td className="py-5 font-semibold text-slate-800">{item.description}</td>
                     <td className="py-5 text-center text-slate-600 font-medium">{item.quantity}</td>
-                    <td className="py-5 text-right text-slate-600 font-medium">${item.rate.toFixed(2)}</td>
-                    <td className="py-5 text-right font-bold text-slate-900">${item.amount.toFixed(2)}</td>
+                    <td className="py-5 text-right text-slate-600 font-medium">₹{item.rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="py-5 text-right font-bold text-slate-900">₹{item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   </tr>
                 ))}
               </tbody>
@@ -148,19 +148,19 @@ export default function InvoiceDetail() {
             <div className="w-72 space-y-3 bg-slate-50 p-6 rounded-lg border">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Subtotal</span>
-                <span className="font-bold text-slate-900">${invoice.subtotal.toFixed(2)}</span>
+                <span className="font-bold text-slate-900">₹{invoice.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Tax</span>
-                <span className="font-bold text-slate-900">${invoice.tax.toFixed(2)}</span>
+                <span className="font-bold text-slate-900">₹{invoice.tax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Discount</span>
-                <span className="font-bold text-rose-600">-${invoice.discount.toFixed(2)}</span>
+                <span className="font-bold text-rose-600">-₹{invoice.discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="pt-3 border-t-2 border-slate-200 flex justify-between items-baseline">
                 <span className="text-slate-900 font-black uppercase tracking-widest text-xs">Total Amount</span>
-                <span className="text-2xl font-black text-primary font-mono">${invoice.total.toFixed(2)}</span>
+                <span className="text-2xl font-black text-primary font-mono">₹{invoice.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
           </div>
