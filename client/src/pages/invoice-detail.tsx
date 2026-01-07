@@ -51,7 +51,7 @@ export default function InvoiceDetail() {
             <div className="flex justify-between items-start">
               <div className="flex gap-10 items-start">
                 {company?.logoUrl ? (
-                  <img src={company.logoUrl} alt={company.name} className="h-32 w-auto object-contain bg-white p-2 rounded shadow-sm border" />
+                  <img src={company.logoUrl} alt={company.name} className="h-40 w-auto object-contain" />
                 ) : (
                   <div className="h-24 w-24 bg-primary rounded flex items-center justify-center text-primary-foreground font-bold text-4xl">
                     {company?.name ? company.name.charAt(0) : "I"}
