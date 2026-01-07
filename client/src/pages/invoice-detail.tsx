@@ -87,7 +87,7 @@ export default function InvoiceDetail() {
           {/* Client Info */}
           <div className="p-10 grid md:grid-cols-2 gap-12 border-b">
             <div className="space-y-4">
-              <h3 className="text-xs font-black text-black uppercase tracking-[0.2em]">Bill To</h3>
+              <h3 className="text-sm font-bold text-black uppercase tracking-normal">Bill To</h3>
               <div className="flex gap-10 items-start">
                 {(invoice.client as any).logoUrl ? (
                   <img src={(invoice.client as any).logoUrl} alt={invoice.client.name} className="h-40 w-auto object-contain" />
@@ -109,8 +109,8 @@ export default function InvoiceDetail() {
               </div>
             </div>
             <div className="flex flex-col items-end justify-start space-y-4">
-              <h3 className="text-xs font-black text-black uppercase tracking-[0.2em]">Status</h3>
-              <div className={`px-4 py-1 rounded text-xs font-black uppercase tracking-widest border-2
+              <h3 className="text-sm font-bold text-black uppercase tracking-normal">Status</h3>
+              <div className={`px-4 py-1.5 rounded text-sm font-bold uppercase tracking-normal border-2
                 ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
                   invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
                   'bg-rose-50 text-rose-700 border-rose-200'}`}>
