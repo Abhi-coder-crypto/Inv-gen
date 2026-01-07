@@ -47,83 +47,96 @@ export default function InvoiceDetail() {
       <Card className="print-content overflow-hidden">
         <CardContent className="p-0">
           {/* Header */}
-          <div className="bg-primary/5 p-8 border-b border-border/50">
+          <div className="bg-slate-50 p-10 border-b">
             <div className="flex justify-between items-start">
-              <div className="flex gap-6 items-start">
+              <div className="flex gap-8 items-start">
                 {company?.logoUrl ? (
-                  <img src={company.logoUrl} alt={company.name} className="h-20 w-auto object-contain bg-white p-1 rounded border" />
+                  <img src={company.logoUrl} alt={company.name} className="h-24 w-auto object-contain bg-white p-2 rounded shadow-sm border" />
                 ) : (
-                  <div className="h-16 w-16 bg-primary rounded-lg flex items-center justify-center text-primary-foreground font-bold text-2xl">
+                  <div className="h-20 w-20 bg-primary rounded flex items-center justify-center text-primary-foreground font-bold text-3xl">
                     {company?.name ? company.name.charAt(0) : "I"}
                   </div>
                 )}
-                <div className="space-y-1">
-                  <h1 className="text-2xl font-bold text-primary">{company?.name || "Your Company"}</h1>
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap max-w-xs">{company?.address}</p>
-                  {company?.phone && <p className="text-sm text-muted-foreground">Phone: {company.phone}</p>}
-                  {company?.email && <p className="text-sm text-muted-foreground">{company.email}</p>}
-                  {company?.website && <p className="text-sm text-muted-foreground">{company.website}</p>}
-                  {company?.gst && <p className="text-sm text-muted-foreground font-medium uppercase">GST: {company.gst}</p>}
+                <div className="space-y-1.5">
+                  <h1 className="text-3xl font-bold tracking-tight text-slate-900">{company?.name || "Your Company"}</h1>
+                  <div className="text-sm text-slate-600 space-y-0.5">
+                    <p className="whitespace-pre-wrap max-w-sm">{company?.address}</p>
+                    {company?.phone && <p>Phone: <span className="text-slate-900 font-medium">{company.phone}</span></p>}
+                    {company?.email && <p>Email: <span className="text-slate-900 font-medium">{company.email}</span></p>}
+                    {company?.website && <p className="text-slate-900">{company.website}</p>}
+                    {company?.gst && <p className="mt-2 inline-block px-2 py-0.5 bg-slate-200 text-slate-800 rounded text-xs font-bold uppercase">GST: {company.gst}</p>}
+                  </div>
                 </div>
               </div>
-              <div className="text-right space-y-1">
-                <h2 className="text-4xl font-display font-bold text-foreground/20 tracking-wider">INVOICE</h2>
-                <p className="font-semibold text-lg">{invoice.invoiceNumber}</p>
-                <p className="text-sm text-muted-foreground">Date: {format(new Date(invoice.date), 'MMM dd, yyyy')}</p>
-                <p className="text-sm text-muted-foreground">Due: {invoice.dueDate ? format(new Date(invoice.dueDate), 'MMM dd, yyyy') : 'On Receipt'}</p>
+              <div className="text-right flex flex-col items-end">
+                <div className="mb-6">
+                  <h2 className="text-5xl font-black text-slate-200 uppercase tracking-tighter leading-none">Invoice</h2>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-slate-500 text-xs uppercase font-bold tracking-wider">Invoice Number</p>
+                  <p className="text-xl font-mono font-bold text-slate-900">{invoice.invoiceNumber}</p>
+                  <div className="pt-2 flex flex-col items-end gap-1 text-sm">
+                    <p className="text-slate-600">Issued: <span className="text-slate-900 font-semibold">{format(new Date(invoice.date), 'MMMM dd, yyyy')}</span></p>
+                    <p className="text-slate-600">Due: <span className="text-slate-900 font-semibold">{invoice.dueDate ? format(new Date(invoice.dueDate), 'MMMM dd, yyyy') : 'On Receipt'}</span></p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Client Info */}
-          <div className="p-8 grid md:grid-cols-2 gap-8">
-            <div className="flex gap-4 items-start">
-              {invoice.client.logoUrl ? (
-                <img src={invoice.client.logoUrl} alt={invoice.client.name} className="h-14 w-14 object-contain bg-white p-1 rounded border" />
-              ) : (
-                <div className="h-12 w-12 bg-secondary rounded-lg flex items-center justify-center text-secondary-foreground font-bold text-xl">
-                  {invoice.client.name.charAt(0)}
+          <div className="p-10 grid md:grid-cols-2 gap-12 border-b">
+            <div className="space-y-4">
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Bill To</h3>
+              <div className="flex gap-6 items-start">
+                {(invoice.client as any).logoUrl ? (
+                  <img src={(invoice.client as any).logoUrl} alt={invoice.client.name} className="h-16 w-16 object-contain bg-white p-1.5 rounded border shadow-sm" />
+                ) : (
+                  <div className="h-14 w-14 bg-slate-100 rounded flex items-center justify-center text-slate-400 font-bold text-2xl border">
+                    {invoice.client.name.charAt(0)}
+                  </div>
+                )}
+                <div className="space-y-1">
+                  <p className="font-bold text-xl text-slate-900 leading-none">{invoice.client.name}</p>
+                  {(invoice.client as any).companyName && <p className="text-primary font-bold">{(invoice.client as any).companyName}</p>}
+                  {(invoice.client as any).serviceName && <p className="text-sm text-slate-500 italic">{(invoice.client as any).serviceName}</p>}
+                  <div className="pt-2 text-sm text-slate-600 space-y-0.5">
+                    {(invoice.client as any).address && <p className="whitespace-pre-wrap">{(invoice.client as any).address}</p>}
+                    {(invoice.client as any).email && <p>{(invoice.client as any).email}</p>}
+                    {(invoice.client as any).phone && <p>{(invoice.client as any).phone}</p>}
+                  </div>
                 </div>
-              )}
-              <div>
-                <h3 className="text-sm font-medium text-muted-foreground mb-1 uppercase tracking-wide">Bill To</h3>
-                <p className="font-bold text-lg leading-tight">{invoice.client.name}</p>
-                {(invoice.client as any).companyName && <p className="text-sm font-medium text-primary">{(invoice.client as any).companyName}</p>}
-                {(invoice.client as any).serviceName && <p className="text-xs italic text-muted-foreground mb-1">Service: {(invoice.client as any).serviceName}</p>}
-                {(invoice.client as any).address && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{(invoice.client as any).address}</p>}
-                {(invoice.client as any).email && <p className="text-sm text-muted-foreground mt-1">{(invoice.client as any).email}</p>}
-                {(invoice.client as any).phone && <p className="text-sm text-muted-foreground">{(invoice.client as any).phone}</p>}
               </div>
             </div>
-            <div className="text-right">
-              <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">Payment Status</h3>
-              <span className={`inline-block px-4 py-1.5 rounded-full text-sm font-bold capitalize border
-                ${invoice.status === 'paid' ? 'bg-green-100 text-green-700 border-green-200' : 
-                  invoice.status === 'pending' ? 'bg-amber-100 text-amber-700 border-amber-200' : 
-                  'bg-red-100 text-red-700 border-red-200'}`}>
+            <div className="flex flex-col items-end justify-start space-y-4">
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Status</h3>
+              <div className={`px-4 py-1 rounded text-xs font-black uppercase tracking-widest border-2
+                ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
+                  invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
+                  'bg-rose-50 text-rose-700 border-rose-200'}`}>
                 {invoice.status}
-              </span>
+              </div>
             </div>
           </div>
 
           {/* Items Table */}
-          <div className="px-8">
-            <table className="w-full text-sm">
+          <div className="p-10">
+            <table className="w-full">
               <thead>
-                <tr className="border-b border-border text-muted-foreground">
-                  <th className="py-3 text-left font-medium">Description</th>
-                  <th className="py-3 text-center font-medium w-24">Qty</th>
-                  <th className="py-3 text-right font-medium w-32">Rate</th>
-                  <th className="py-3 text-right font-medium w-32">Amount</th>
+                <tr className="border-b-2 border-slate-900 text-slate-900">
+                  <th className="py-4 text-left font-black text-xs uppercase tracking-widest">Description</th>
+                  <th className="py-4 text-center font-black text-xs uppercase tracking-widest w-24">Qty</th>
+                  <th className="py-4 text-right font-black text-xs uppercase tracking-widest w-32">Rate</th>
+                  <th className="py-4 text-right font-black text-xs uppercase tracking-widest w-32">Amount</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/50">
+              <tbody className="divide-y border-b-2 border-slate-900">
                 {invoice.items.map((item: any, index: number) => (
-                  <tr key={index}>
-                    <td className="py-4 font-medium">{item.description}</td>
-                    <td className="py-4 text-center">{item.quantity}</td>
-                    <td className="py-4 text-right">${item.rate.toFixed(2)}</td>
-                    <td className="py-4 text-right font-bold">${item.amount.toFixed(2)}</td>
+                  <tr key={index} className="group hover:bg-slate-50 transition-colors">
+                    <td className="py-5 font-semibold text-slate-800">{item.description}</td>
+                    <td className="py-5 text-center text-slate-600 font-medium">{item.quantity}</td>
+                    <td className="py-5 text-right text-slate-600 font-medium">${item.rate.toFixed(2)}</td>
+                    <td className="py-5 text-right font-bold text-slate-900">${item.amount.toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -131,67 +144,70 @@ export default function InvoiceDetail() {
           </div>
 
           {/* Totals */}
-          <div className="p-8 flex justify-end">
-            <div className="w-64 space-y-3">
+          <div className="px-10 pb-10 flex justify-end">
+            <div className="w-72 space-y-3 bg-slate-50 p-6 rounded-lg border">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span>${invoice.subtotal.toFixed(2)}</span>
+                <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Subtotal</span>
+                <span className="font-bold text-slate-900">${invoice.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Tax</span>
-                <span>${invoice.tax.toFixed(2)}</span>
+                <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Tax</span>
+                <span className="font-bold text-slate-900">${invoice.tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Discount</span>
-                <span>-${invoice.discount.toFixed(2)}</span>
+                <span className="text-slate-500 font-medium uppercase tracking-wider text-[10px]">Discount</span>
+                <span className="font-bold text-rose-600">-${invoice.discount.toFixed(2)}</span>
               </div>
-              <Separator className="my-2" />
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total</span>
-                <span className="text-primary">${invoice.total.toFixed(2)}</span>
+              <div className="pt-3 border-t-2 border-slate-200 flex justify-between items-baseline">
+                <span className="text-slate-900 font-black uppercase tracking-widest text-xs">Total Amount</span>
+                <span className="text-2xl font-black text-primary font-mono">${invoice.total.toFixed(2)}</span>
               </div>
             </div>
           </div>
 
           {/* Footer */}
           {(company?.bankName || company?.qrCodeUrl || company?.paymentTerms || invoice.notes) && (
-            <div className="p-8 border-t border-border/50 bg-secondary/5 mt-auto">
-              <div className="grid md:grid-cols-2 gap-8 items-end">
-                <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">Payment Details</h3>
-                  <div className="space-y-3">
-                    <div className="flex gap-4 items-start">
+            <div className="p-10 border-t-2 border-slate-900 bg-slate-50">
+              <div className="grid md:grid-cols-2 gap-12">
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Payment Information</h3>
+                    <div className="flex gap-8 items-start">
                       {company?.qrCodeUrl && (
-                        <div className="bg-white p-2 rounded-lg border shadow-sm">
-                          <img src={company.qrCodeUrl} alt="Payment QR" className="h-28 w-28 object-contain" />
-                          <p className="text-[10px] text-center text-muted-foreground mt-1 font-medium">Scan to Pay</p>
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="bg-white p-3 rounded shadow-sm border">
+                            <img src={company.qrCodeUrl} alt="Payment QR" className="h-32 w-32 object-contain" />
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Scan to Pay</span>
                         </div>
                       )}
-                      <div className="space-y-1">
-                        {company?.bankName && <p className="text-sm font-semibold text-primary">{company.bankName}</p>}
-                        {company?.accountName && <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">Acc Name:</span> {company.accountName}</p>}
-                        {company?.accountNumber && <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">Acc No:</span> {company.accountNumber}</p>}
-                        {(company as any)?.ifscCode && <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">IFSC:</span> {(company as any).ifscCode}</p>}
-                        {(company as any)?.upiId && <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground">UPI:</span> {(company as any).upiId}</p>}
+                      <div className="space-y-2">
+                        {company?.bankName && <p className="text-slate-900 font-black text-lg leading-tight uppercase tracking-tight">{company.bankName}</p>}
+                        <div className="space-y-1 text-sm text-slate-600">
+                          {(company as any)?.accountName && <p><span className="text-slate-400 font-bold uppercase text-[10px] tracking-widest block mb-0.5">Account Name</span><span className="text-slate-900 font-bold">{(company as any).accountName}</span></p>}
+                          {company?.accountNumber && <p><span className="text-slate-400 font-bold uppercase text-[10px] tracking-widest block mb-0.5">Account Number</span><span className="text-slate-900 font-mono font-bold text-base leading-none">{company.accountNumber}</span></p>}
+                          {(company as any)?.ifscCode && <p><span className="text-slate-400 font-bold uppercase text-[10px] tracking-widest block mb-0.5">IFSC Code</span><span className="text-slate-900 font-bold">{ (company as any).ifscCode }</span></p>}
+                          {(company as any)?.upiId && <p><span className="text-slate-400 font-bold uppercase text-[10px] tracking-widest block mb-0.5">UPI ID</span><span className="text-slate-900 font-bold">{ (company as any).upiId }</span></p>}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-8">
                   {invoice.notes && (
-                    <div className="mb-4">
-                      <h4 className="text-xs font-bold text-muted-foreground mb-1 uppercase tracking-widest">Notes</h4>
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">{invoice.notes}</p>
+                    <div className="space-y-2">
+                      <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Notes</h4>
+                      <p className="text-sm text-slate-600 font-medium leading-relaxed italic border-l-4 border-slate-200 pl-4">{invoice.notes}</p>
                     </div>
                   )}
                   {company?.paymentTerms && (
-                    <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
-                      <h3 className="text-xs font-bold text-primary mb-2 uppercase tracking-widest">Terms & Conditions</h3>
-                      <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{company.paymentTerms}</p>
+                    <div className="space-y-3 bg-white p-6 rounded border shadow-sm">
+                      <h3 className="text-xs font-black text-primary uppercase tracking-[0.2em]">Terms & Conditions</h3>
+                      <p className="text-xs text-slate-500 leading-relaxed whitespace-pre-wrap">{company.paymentTerms}</p>
                     </div>
                   )}
-                  <div className="text-right pt-4 border-t border-border/50">
-                    <p className="text-xs text-muted-foreground italic">Thank you for your business!</p>
+                  <div className="pt-6 border-t border-slate-200 text-center md:text-right">
+                    <p className="text-sm font-bold text-slate-900">Thank you for your business!</p>
                   </div>
                 </div>
               </div>
