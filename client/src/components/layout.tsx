@@ -1,0 +1,116 @@
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
+import { 
+  LayoutDashboard, 
+  FileText, 
+  Users, 
+  Settings, 
+  LogOut, 
+  Menu,
+  Sparkles
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useState } from "react";
+
+export function Layout({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  const { user, logout } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const navigation = [
+    { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Invoices', href: '/invoices', icon: FileText },
+    { name: 'Clients', href: '/clients', icon: Users },
+    { name: 'Settings', href: '/settings', icon: Settings },
+  ];
+
+  const Sidebar = () => (
+    <div className="flex flex-col h-full bg-card border-r border-border">
+      <div className="p-6 flex items-center gap-2">
+        <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center text-primary-foreground">
+          <Sparkles className="h-5 w-5" />
+        </div>
+        <span className="font-display font-bold text-xl tracking-tight">InvoiceFlow</span>
+      </div>
+
+      <nav className="flex-1 px-4 space-y-1 mt-4">
+        {navigation.map((item) => {
+          const isActive = location === item.href;
+          return (
+            <Link key={item.name} href={item.href}>
+              <div 
+                className={`
+                  flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200
+                  ${isActive 
+                    ? 'bg-primary/10 text-primary font-medium' 
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }
+                `}
+                onClick={() => setIsOpen(false)}
+              >
+                <item.icon className="h-5 w-5" />
+                {item.name}
+              </div>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-4 border-t border-border">
+        <div className="flex items-center gap-3 px-4 py-3">
+          <Avatar className="h-9 w-9 border border-border">
+            <AvatarFallback className="bg-primary/10 text-primary">
+              {user?.username.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">{user?.username}</p>
+            <p className="text-xs text-muted-foreground truncate">{user?.role}</p>
+          </div>
+          <Button variant="ghost" size="icon" onClick={() => logout()} className="h-8 w-8 text-muted-foreground hover:text-destructive">
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-background flex">
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block w-64 shrink-0 fixed inset-y-0 z-50">
+        <Sidebar />
+      </div>
+
+      {/* Mobile Header */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-card border-b border-border z-40 flex items-center px-4 justify-between">
+        <div className="flex items-center gap-2">
+           <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center text-primary-foreground">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <span className="font-display font-bold text-lg">InvoiceFlow</span>
+        </div>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-64 border-r border-border">
+            <Sidebar />
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Main Content */}
+      <main className="flex-1 md:pl-64 flex flex-col min-h-screen">
+        <div className="h-16 md:hidden"></div> {/* Spacer for mobile header */}
+        <div className="flex-1 p-4 md:p-8 lg:p-10 max-w-7xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {children}
+        </div>
+      </main>
+    </div>
+  );
+}
