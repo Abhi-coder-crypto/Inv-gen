@@ -115,7 +115,11 @@ export async function registerRoutes(
   });
 
   app.post(api.invoices.create.path, isAuthenticated, async (req, res) => {
-    const input = api.invoices.create.input.parse(req.body);
+    const rawInput = req.body;
+    if (typeof rawInput.date === "string") rawInput.date = new Date(rawInput.date);
+    if (typeof rawInput.dueDate === "string") rawInput.dueDate = new Date(rawInput.dueDate);
+    
+    const input = api.invoices.create.input.parse(rawInput);
     const invoice = await storage.createInvoice(input);
     res.status(201).json(invoice);
   });
