@@ -76,8 +76,8 @@ export default function InvoiceDetail() {
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">Bill To</h3>
               <p className="font-bold text-lg">{invoice.client.name}</p>
-              {invoice.client.address && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{invoice.client.address}</p>}
-              {invoice.client.email && <p className="text-sm text-muted-foreground mt-1">{invoice.client.email}</p>}
+              {invoice.client.address && <p className="text-sm text-muted-foreground whitespace-pre-wrap">{(invoice.client as any).address}</p>}
+              {invoice.client.email && <p className="text-sm text-muted-foreground mt-1">{(invoice.client as any).email}</p>}
             </div>
             <div className="text-right">
               <h3 className="text-sm font-medium text-muted-foreground mb-2 uppercase tracking-wide">Payment Status</h3>
