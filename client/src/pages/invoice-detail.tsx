@@ -70,7 +70,7 @@ export default function InvoiceDetail() {
               </div>
               <div className="text-right flex flex-col items-end">
                 <div className="mb-6">
-                  <h2 className="text-5xl font-black text-slate-200 uppercase tracking-tighter leading-none">Invoice</h2>
+                  <h2 className="text-4xl font-bold text-slate-100 uppercase tracking-tight leading-none">Invoice</h2>
                 </div>
                 <div className="space-y-1">
                   <p className="text-black text-xs uppercase font-bold tracking-wider">Invoice Number</p>
@@ -87,20 +87,20 @@ export default function InvoiceDetail() {
           {/* Client Info */}
           <div className="p-10 grid md:grid-cols-2 gap-12 border-b">
             <div className="space-y-4">
-              <h3 className="text-sm font-bold text-black uppercase tracking-normal">Bill To</h3>
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Bill To</h3>
               <div className="flex gap-10 items-start">
                 {(invoice.client as any).logoUrl ? (
-                  <img src={(invoice.client as any).logoUrl} alt={invoice.client.name} className="h-40 w-auto object-contain" />
+                  <img src={(invoice.client as any).logoUrl} alt={invoice.client.name} className="h-32 w-auto object-contain" />
                 ) : (
-                  <div className="h-24 w-24 bg-slate-100 rounded flex items-center justify-center text-black font-bold text-4xl border">
+                  <div className="h-20 w-20 bg-slate-100 rounded flex items-center justify-center text-slate-300 font-bold text-3xl border">
                     {invoice.client.name.charAt(0)}
                   </div>
                 )}
                 <div className="space-y-1">
-                  <p className="font-bold text-xl text-black leading-none">{invoice.client.name}</p>
-                  {(invoice.client as any).companyName && <p className="text-black font-bold">{(invoice.client as any).companyName}</p>}
-                  {(invoice.client as any).serviceName && <p className="text-sm text-black italic">{(invoice.client as any).serviceName}</p>}
-                  <div className="pt-2 text-sm text-black space-y-0.5">
+                  <p className="font-bold text-xl text-black leading-none tracking-tight">{invoice.client.name}</p>
+                  {(invoice.client as any).companyName && <p className="text-slate-600 font-semibold">{(invoice.client as any).companyName}</p>}
+                  {(invoice.client as any).serviceName && <p className="text-sm text-slate-500 italic">{(invoice.client as any).serviceName}</p>}
+                  <div className="pt-2 text-sm text-slate-500 space-y-0.5">
                     {(invoice.client as any).address && <p className="whitespace-pre-wrap">{(invoice.client as any).address}</p>}
                     {(invoice.client as any).email && <p>{(invoice.client as any).email}</p>}
                     {(invoice.client as any).phone && <p>{(invoice.client as any).phone}</p>}
@@ -109,11 +109,11 @@ export default function InvoiceDetail() {
               </div>
             </div>
             <div className="flex flex-col items-end justify-start space-y-4">
-              <h3 className="text-sm font-bold text-black uppercase tracking-normal">Status</h3>
-              <div className={`px-4 py-1.5 rounded text-sm font-bold uppercase tracking-normal border-2
-                ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
-                  invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-200' : 
-                  'bg-rose-50 text-rose-700 border-rose-200'}`}>
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Status</h3>
+              <div className={`px-3 py-1 rounded text-[10px] font-bold uppercase tracking-widest border
+                ${invoice.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 
+                  invoice.status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-100' : 
+                  'bg-rose-50 text-rose-700 border-rose-100'}`}>
                 {invoice.status}
               </div>
             </div>
@@ -123,20 +123,20 @@ export default function InvoiceDetail() {
           <div className="p-10">
             <table className="w-full">
               <thead>
-                <tr className="border-b-2 border-black text-black">
-                  <th className="py-4 text-left font-black text-xs uppercase tracking-widest">Description</th>
-                  <th className="py-4 text-center font-black text-xs uppercase tracking-widest w-24">Qty</th>
-                  <th className="py-4 text-right font-black text-xs uppercase tracking-widest w-32">Rate</th>
-                  <th className="py-4 text-right font-black text-xs uppercase tracking-widest w-32">Amount</th>
+                <tr className="border-b border-slate-200 text-black">
+                  <th className="py-3 text-left font-semibold text-xs uppercase tracking-wider">Description</th>
+                  <th className="py-3 text-center font-semibold text-xs uppercase tracking-wider w-24">Qty</th>
+                  <th className="py-3 text-right font-semibold text-xs uppercase tracking-wider w-32">Rate</th>
+                  <th className="py-3 text-right font-semibold text-xs uppercase tracking-wider w-32">Amount</th>
                 </tr>
               </thead>
-              <tbody className="divide-y border-b-2 border-black">
+              <tbody className="divide-y border-b border-slate-200 text-sm">
                 {invoice.items.map((item: any, index: number) => (
                   <tr key={index} className="group hover:bg-slate-50 transition-colors">
-                    <td className="py-5 font-semibold text-black">{item.description}</td>
-                    <td className="py-5 text-center text-black font-medium">{item.quantity}</td>
-                    <td className="py-5 text-right text-black font-medium">₹{item.rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td className="py-5 text-right font-bold text-black">₹{item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="py-4 font-medium text-slate-800">{item.description}</td>
+                    <td className="py-4 text-center text-slate-600">{item.quantity}</td>
+                    <td className="py-4 text-right text-slate-600">₹{item.rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="py-4 text-right font-medium text-slate-900">₹{item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   </tr>
                 ))}
               </tbody>
@@ -145,69 +145,69 @@ export default function InvoiceDetail() {
 
           {/* Totals */}
           <div className="px-10 pb-10 flex justify-end">
-            <div className="w-72 space-y-3 bg-slate-50 p-6 rounded-lg border">
-              <div className="flex justify-between text-sm">
-                <span className="text-black font-medium uppercase tracking-wider text-[10px]">Subtotal</span>
-                <span className="font-bold text-black">₹{invoice.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <div className="w-64 space-y-1 bg-slate-50 p-4 rounded border">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Subtotal</span>
+                <span className="font-medium text-slate-900">₹{invoice.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-black font-medium uppercase tracking-wider text-[10px]">Tax</span>
-                <span className="font-bold text-black">₹{invoice.tax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Tax</span>
+                <span className="font-medium text-slate-900">₹{invoice.tax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-black font-medium uppercase tracking-wider text-[10px]">Discount</span>
-                <span className="font-bold text-rose-600">-₹{invoice.discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-500 uppercase tracking-widest text-[9px]">Discount</span>
+                <span className="font-medium text-rose-600">-₹{invoice.discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
-              <div className="pt-3 border-t-2 border-slate-200 flex justify-between items-baseline">
-                <span className="text-black font-black uppercase tracking-widest text-xs">Total Amount</span>
-                <span className="text-2xl font-black text-black font-mono">₹{invoice.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <div className="pt-2 mt-2 border-t border-slate-200 flex justify-between items-baseline">
+                <span className="text-slate-900 font-bold uppercase tracking-widest text-[10px]">Total</span>
+                <span className="text-lg font-bold text-slate-900">₹{invoice.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
           </div>
 
           {/* Footer */}
           {(company?.bankName || company?.qrCodeUrl || company?.paymentTerms || invoice.notes) && (
-            <div className="p-10 border-t-2 border-black bg-slate-50">
+            <div className="p-10 border-t border-slate-200 bg-slate-50">
               <div className="grid md:grid-cols-2 gap-12">
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-xs font-black text-black uppercase tracking-[0.2em] mb-4">Payment Information</h3>
+                    <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Payment Information</h3>
                     <div className="flex gap-8 items-start">
                       {company?.qrCodeUrl && (
                         <div className="flex flex-col items-center gap-2">
-                          <div className="bg-white p-3 rounded shadow-sm border">
-                            <img src={company.qrCodeUrl} alt="Payment QR" className="h-32 w-32 object-contain" />
+                          <div className="bg-white p-2 rounded border shadow-sm">
+                            <img src={company.qrCodeUrl} alt="Payment QR" className="h-28 w-28 object-contain" />
                           </div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-black">Scan to Pay</span>
+                          <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Scan to Pay</span>
                         </div>
                       )}
-                      <div className="space-y-2">
-                        {company?.bankName && <p className="text-black font-black text-lg leading-tight uppercase tracking-tight">{company.bankName}</p>}
-                        <div className="space-y-1 text-sm text-black">
-                          {company?.accountName && <p><span className="text-black font-bold uppercase text-[10px] tracking-widest block mb-0.5">Account Name</span><span className="text-black font-bold">{(company as any).accountName}</span></p>}
-                          {company?.accountNumber && <p><span className="text-black font-bold uppercase text-[10px] tracking-widest block mb-0.5">Account Number</span><span className="text-black font-mono font-bold text-base leading-none">{company.accountNumber}</span></p>}
-                          {(company as any)?.ifscCode && <p><span className="text-black font-bold uppercase text-[10px] tracking-widest block mb-0.5">IFSC Code</span><span className="text-black font-bold">{ (company as any).ifscCode }</span></p>}
-                          {(company as any)?.upiId && <p><span className="text-black font-bold uppercase text-[10px] tracking-widest block mb-0.5">UPI ID</span><span className="text-black font-bold">{ (company as any).upiId }</span></p>}
+                      <div className="space-y-3">
+                        {company?.bankName && <p className="text-slate-900 font-bold text-base leading-tight uppercase tracking-tight">{company.bankName}</p>}
+                        <div className="space-y-2 text-xs text-slate-600">
+                          {company?.accountName && <p><span className="text-slate-400 font-bold uppercase text-[9px] tracking-widest block mb-0.5">Account Name</span><span className="text-slate-900 font-medium">{(company as any).accountName}</span></p>}
+                          {company?.accountNumber && <p><span className="text-slate-400 font-bold uppercase text-[9px] tracking-widest block mb-0.5">Account Number</span><span className="text-slate-900 font-mono font-medium">{company.accountNumber}</span></p>}
+                          {(company as any)?.ifscCode && <p><span className="text-slate-400 font-bold uppercase text-[9px] tracking-widest block mb-0.5">IFSC Code</span><span className="text-slate-900 font-medium">{ (company as any).ifscCode }</span></p>}
+                          {(company as any)?.upiId && <p><span className="text-slate-400 font-bold uppercase text-[9px] tracking-widest block mb-0.5">UPI ID</span><span className="text-slate-900 font-medium">{ (company as any).upiId }</span></p>}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="space-y-8">
+                <div className="space-y-6">
                   {invoice.notes && (
-                    <div className="space-y-2">
-                      <h4 className="text-xs font-black text-black uppercase tracking-[0.2em]">Notes</h4>
-                      <p className="text-sm text-black font-medium leading-relaxed italic border-l-4 border-slate-200 pl-4">{invoice.notes}</p>
+                    <div className="space-y-1">
+                      <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Notes</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed italic border-l-2 border-slate-200 pl-3">{invoice.notes}</p>
                     </div>
                   )}
                   {company?.paymentTerms && (
-                    <div className="space-y-3 bg-white p-6 rounded border shadow-sm">
-                      <h3 className="text-xs font-black text-black uppercase tracking-[0.2em]">Terms & Conditions</h3>
-                      <p className="text-xs text-black leading-relaxed whitespace-pre-wrap">{company.paymentTerms}</p>
+                    <div className="space-y-2 bg-white p-5 rounded border shadow-sm">
+                      <h3 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">Terms & Conditions</h3>
+                      <p className="text-[10px] text-slate-500 leading-relaxed whitespace-pre-wrap">{company.paymentTerms}</p>
                     </div>
                   )}
-                  <div className="pt-6 border-t border-slate-200 text-center md:text-right">
-                    <p className="text-sm font-bold text-black">Thank you for your business!</p>
+                  <div className="pt-4 border-t border-slate-200 text-center md:text-right">
+                    <p className="text-xs font-semibold text-slate-900 italic">Thank you for your business!</p>
                   </div>
                 </div>
               </div>
