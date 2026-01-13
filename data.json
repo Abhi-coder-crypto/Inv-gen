@@ -1,0 +1,33 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin",
+      "createdAt": "2026-01-13T12:40:57.846Z"
+    }
+  ],
+  "companies": [],
+  "clients": [
+    {
+      "name": "Acme Corp",
+      "address": "123 Business Rd",
+      "phone": "555-0123",
+      "email": "contact@acme.com",
+      "gst": "GST12345",
+      "logoUrl": "https://placehold.co/100x100?text=Acme",
+      "id": 1,
+      "createdAt": "2026-01-13T12:40:57.880Z",
+      "companyName": null,
+      "serviceName": null
+    }
+  ],
+  "invoices": [],
+  "currentId": {
+    "users": 2,
+    "companies": 1,
+    "clients": 2,
+    "invoices": 1
+  }
+}

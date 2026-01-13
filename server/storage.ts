@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import {
   users, companies, clients, invoices,
   type User, type InsertUser,
@@ -42,6 +44,7 @@ export class MemStorage implements IStorage {
   private invoices: Map<number, Invoice>;
   sessionStore: session.Store;
   currentId: { [key: string]: number };
+  private dataFilePath: string;
 
   constructor() {
     this.users = new Map();
@@ -52,16 +55,70 @@ export class MemStorage implements IStorage {
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
     });
+    this.dataFilePath = path.join(process.cwd(), "data.json");
     
-    // Create initial admin user
-    const adminUser: User = {
-      id: this.currentId.users++,
-      username: "admin",
-      password: "admin123",
-      role: "admin",
-      createdAt: new Date()
-    };
-    this.users.set(adminUser.id, adminUser);
+    this.loadData();
+
+    // Ensure admin user exists if no users loaded
+    if (this.users.size === 0) {
+      const adminUser: User = {
+        id: this.currentId.users++,
+        username: "admin",
+        password: "admin123",
+        role: "admin",
+        createdAt: new Date()
+      };
+      this.users.set(adminUser.id, adminUser);
+      this.saveData();
+    }
+  }
+
+  private loadData() {
+    if (fs.existsSync(this.dataFilePath)) {
+      try {
+        const rawData = fs.readFileSync(this.dataFilePath, "utf8");
+        const data = JSON.parse(rawData);
+        
+        // Helper to revive dates
+        const revive = (obj: any) => {
+          if (obj && typeof obj === 'object') {
+            for (const key in obj) {
+              if (typeof obj[key] === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(obj[key])) {
+                obj[key] = new Date(obj[key]);
+              } else if (typeof obj[key] === 'object') {
+                revive(obj[key]);
+              }
+            }
+          }
+          return obj;
+        };
+
+        const revivedData = revive(data);
+        
+        if (revivedData.users) revivedData.users.forEach((u: User) => this.users.set(u.id, u));
+        if (revivedData.companies) revivedData.companies.forEach((c: Company) => this.companies.set(c.id, c));
+        if (revivedData.clients) revivedData.clients.forEach((c: Client) => this.clients.set(c.id, c));
+        if (revivedData.invoices) revivedData.invoices.forEach((i: Invoice) => this.invoices.set(i.id, i));
+        if (revivedData.currentId) this.currentId = revivedData.currentId;
+      } catch (e) {
+        console.error("Failed to load data:", e);
+      }
+    }
+  }
+
+  private saveData() {
+    try {
+      const data = {
+        users: Array.from(this.users.values()),
+        companies: Array.from(this.companies.values()),
+        clients: Array.from(this.clients.values()),
+        invoices: Array.from(this.invoices.values()),
+        currentId: this.currentId
+      };
+      fs.writeFileSync(this.dataFilePath, JSON.stringify(data, null, 2));
+    } catch (e) {
+      console.error("Failed to save data:", e);
+    }
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -81,6 +138,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date()
     };
     this.users.set(id, user);
+    this.saveData();
     return user;
   }
 
@@ -90,8 +148,9 @@ export class MemStorage implements IStorage {
 
   async updateCompany(insertCompany: InsertCompany): Promise<Company> {
     const existing = await this.getCompany();
+    let result: Company;
     if (existing) {
-      const updated: Company = { 
+      result = { 
         ...existing, 
         ...insertCompany,
         gst: insertCompany.gst ?? null,
@@ -106,27 +165,28 @@ export class MemStorage implements IStorage {
         ifsc: (insertCompany as any).ifsc ?? null,
         upiId: (insertCompany as any).upiId ?? null
       };
-      this.companies.set(existing.id, updated);
-      return updated;
+      this.companies.set(existing.id, result);
+    } else {
+      const id = this.currentId.companies++;
+      result = { 
+        ...insertCompany, 
+        id,
+        gst: insertCompany.gst ?? null,
+        phone: insertCompany.phone ?? null,
+        email: insertCompany.email ?? null,
+        website: insertCompany.website ?? null,
+        bankName: insertCompany.bankName ?? null,
+        accountNumber: insertCompany.accountNumber ?? null,
+        qrCodeUrl: insertCompany.qrCodeUrl ?? null,
+        logoUrl: insertCompany.logoUrl ?? null,
+        paymentTerms: insertCompany.paymentTerms ?? null,
+        ifsc: (insertCompany as any).ifsc ?? null,
+        upiId: (insertCompany as any).upiId ?? null
+      };
+      this.companies.set(id, result);
     }
-    const id = this.currentId.companies++;
-    const company: Company = { 
-      ...insertCompany, 
-      id,
-      gst: insertCompany.gst ?? null,
-      phone: insertCompany.phone ?? null,
-      email: insertCompany.email ?? null,
-      website: insertCompany.website ?? null,
-      bankName: insertCompany.bankName ?? null,
-      accountNumber: insertCompany.accountNumber ?? null,
-      qrCodeUrl: insertCompany.qrCodeUrl ?? null,
-      logoUrl: insertCompany.logoUrl ?? null,
-      paymentTerms: insertCompany.paymentTerms ?? null,
-      ifsc: (insertCompany as any).ifsc ?? null,
-      upiId: (insertCompany as any).upiId ?? null
-    };
-    this.companies.set(id, company);
-    return company;
+    this.saveData();
+    return result;
   }
 
   async getClients(): Promise<Client[]> {
@@ -154,6 +214,7 @@ export class MemStorage implements IStorage {
       serviceName: insertClient.serviceName || null
     };
     this.clients.set(id, client);
+    this.saveData();
     return client;
   }
 
@@ -162,6 +223,7 @@ export class MemStorage implements IStorage {
     if (!client) throw new Error("Client not found");
     const updated = { ...client, ...updates } as Client;
     this.clients.set(id, updated);
+    this.saveData();
     return updated;
   }
 
@@ -198,6 +260,7 @@ export class MemStorage implements IStorage {
       items: (insertInvoice.items as any) || []
     };
     this.invoices.set(id, invoice);
+    this.saveData();
     return invoice;
   }
 
@@ -206,11 +269,14 @@ export class MemStorage implements IStorage {
     if (!invoice) throw new Error("Invoice not found");
     const updated = { ...invoice, ...updates } as Invoice;
     this.invoices.set(id, updated);
+    this.saveData();
     return updated;
   }
 
   async deleteInvoice(id: number): Promise<boolean> {
-    return this.invoices.delete(id);
+    const deleted = this.invoices.delete(id);
+    if (deleted) this.saveData();
+    return deleted;
   }
 }
 
