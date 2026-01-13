@@ -64,8 +64,8 @@ export default function Invoices() {
                   
                   <div className="flex items-center gap-6">
                     <div className="text-right hidden sm:block">
-                      <p className="font-bold text-foreground">${invoice.total.toLocaleString()}</p>
-                      <p className="text-xs text-muted-foreground">USD</p>
+                      <p className="font-bold text-foreground">₹{invoice.total.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">INR</p>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize border
                       ${invoice.status === 'paid' ? 'bg-green-500/10 text-green-700 border-green-200' : 

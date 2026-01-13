@@ -60,13 +60,13 @@ export default function Dashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard 
           title="Total Revenue" 
-          value={`$${totalRevenue.toLocaleString()}`} 
+          value={`₹${totalRevenue.toLocaleString()}`} 
           icon={DollarSign}
           desc="Lifetime earnings"
         />
         <StatCard 
           title="Pending" 
-          value={`$${pendingAmount.toLocaleString()}`} 
+          value={`₹${pendingAmount.toLocaleString()}`} 
           icon={Clock}
           desc="Unpaid invoices"
         />
@@ -106,7 +106,7 @@ export default function Dashboard() {
                     fontSize={12} 
                     tickLine={false} 
                     axisLine={false}
-                    tickFormatter={(value) => `$${value}`}
+                    tickFormatter={(value) => `₹${value}`}
                   />
                   <Tooltip 
                     cursor={{ fill: 'hsl(var(--muted)/0.5)' }}
@@ -136,7 +136,7 @@ export default function Dashboard() {
                     <p className="text-xs text-muted-foreground">{invoice.invoiceNumber}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold">${invoice.total.toLocaleString()}</p>
+                    <p className="text-sm font-bold">₹{invoice.total.toLocaleString()}</p>
                     <span className={`text-[10px] px-2 py-0.5 rounded-full capitalize 
                       ${invoice.status === 'paid' ? 'bg-green-100 text-green-700' : 
                         invoice.status === 'pending' ? 'bg-amber-100 text-amber-700' : 
