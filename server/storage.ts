@@ -1,4 +1,3 @@
-import { db, pool } from "./db";
 import {
   users, companies, clients, invoices,
   type User, type InsertUser,
@@ -6,11 +5,10 @@ import {
   type Client, type InsertClient,
   type Invoice, type InsertInvoice,
 } from "@shared/schema";
-import { eq, desc } from "drizzle-orm";
 import session from "express-session";
-import connectPg from "connect-pg-simple";
+import MemoryStoreFactory from "memorystore";
 
-const PostgresSessionStore = connectPg(session);
+const MemoryStore = MemoryStoreFactory(session);
 
 export interface IStorage {
   sessionStore: session.Store;
@@ -36,92 +34,129 @@ export interface IStorage {
   updateInvoice(id: number, invoice: Partial<InsertInvoice>): Promise<Invoice>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class MemStorage implements IStorage {
+  private users: Map<number, User>;
+  private companies: Map<number, Company>;
+  private clients: Map<number, Client>;
+  private invoices: Map<number, Invoice>;
   sessionStore: session.Store;
+  currentId: { [key: string]: number };
 
   constructor() {
-    this.sessionStore = new PostgresSessionStore({
-      pool,
-      createTableIfMissing: true,
+    this.users = new Map();
+    this.companies = new Map();
+    this.clients = new Map();
+    this.invoices = new Map();
+    this.currentId = { users: 1, companies: 1, clients: 1, invoices: 1 };
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000,
     });
   }
 
-  // Auth
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    return this.users.get(id);
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user;
+    return Array.from(this.users.values()).find((u) => u.username === username);
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
+    const id = this.currentId.users++;
+    const user: User = { ...insertUser, id, role: insertUser.role || "admin" };
+    this.users.set(id, user);
     return user;
   }
 
-  // Company
   async getCompany(): Promise<Company | undefined> {
-    const [company] = await db.select().from(companies).limit(1);
-    return company;
+    return Array.from(this.companies.values())[0];
   }
 
   async updateCompany(insertCompany: InsertCompany): Promise<Company> {
     const existing = await this.getCompany();
     if (existing) {
-      const [updated] = await db.update(companies).set(insertCompany).where(eq(companies.id, existing.id)).returning();
+      const updated = { ...existing, ...insertCompany };
+      this.companies.set(existing.id, updated);
       return updated;
     }
-    const [company] = await db.insert(companies).values(insertCompany).returning();
+    const id = this.currentId.companies++;
+    const company: Company = { ...insertCompany, id };
+    this.companies.set(id, company);
     return company;
   }
 
-  // Clients
   async getClients(): Promise<Client[]> {
-    return await db.select().from(clients).orderBy(desc(clients.createdAt));
+    return Array.from(this.clients.values()).sort((a, b) => 
+      (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0)
+    );
   }
 
   async getClient(id: number): Promise<Client | undefined> {
-    const [client] = await db.select().from(clients).where(eq(clients.id, id));
-    return client;
+    return this.clients.get(id);
   }
 
   async createClient(insertClient: InsertClient): Promise<Client> {
-    const [client] = await db.insert(clients).values(insertClient).returning();
+    const id = this.currentId.clients++;
+    const client: Client = { 
+      ...insertClient, 
+      id, 
+      createdAt: new Date(),
+      logoUrl: insertClient.logoUrl || null,
+      gst: insertClient.gst || null
+    };
+    this.clients.set(id, client);
     return client;
   }
 
   async updateClient(id: number, updates: Partial<InsertClient>): Promise<Client> {
-    const [updated] = await db.update(clients).set(updates).where(eq(clients.id, id)).returning();
+    const client = this.clients.get(id);
+    if (!client) throw new Error("Client not found");
+    const updated = { ...client, ...updates };
+    this.clients.set(id, updated);
     return updated;
   }
 
-  // Invoices
   async getInvoices(): Promise<(Invoice & { client: Client })[]> {
-    return await db.query.invoices.findMany({
-      with: { client: true },
-      orderBy: desc(invoices.createdAt),
-    });
+    return Array.from(this.invoices.values())
+      .map(invoice => ({
+        ...invoice,
+        client: this.clients.get(invoice.clientId)!
+      }))
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async getInvoice(id: number): Promise<(Invoice & { client: Client }) | undefined> {
-    return await db.query.invoices.findFirst({
-      where: eq(invoices.id, id),
-      with: { client: true },
-    });
+    const invoice = this.invoices.get(id);
+    if (!invoice) return undefined;
+    const client = this.clients.get(invoice.clientId);
+    if (!client) return undefined;
+    return { ...invoice, client };
   }
 
   async createInvoice(insertInvoice: InsertInvoice): Promise<Invoice> {
-    const [invoice] = await db.insert(invoices).values(insertInvoice as any).returning();
+    const id = this.currentId.invoices++;
+    const invoice: Invoice = { 
+      ...insertInvoice, 
+      id, 
+      createdAt: new Date(),
+      dueDate: insertInvoice.dueDate || null,
+      notes: insertInvoice.notes || null,
+      tax: insertInvoice.tax || "0",
+      discount: insertInvoice.discount || "0",
+      subtotal: insertInvoice.subtotal || "0",
+      total: insertInvoice.total || "0"
+    };
+    this.invoices.set(id, invoice);
     return invoice;
   }
 
   async updateInvoice(id: number, updates: Partial<InsertInvoice>): Promise<Invoice> {
-    const [updated] = await db.update(invoices).set(updates as any).where(eq(invoices.id, id)).returning();
+    const invoice = this.invoices.get(id);
+    if (!invoice) throw new Error("Invoice not found");
+    const updated = { ...invoice, ...updates };
+    this.invoices.set(id, updated);
     return updated;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
