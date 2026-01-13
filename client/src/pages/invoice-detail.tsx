@@ -108,6 +108,12 @@ export default function InvoiceDetail() {
                 <div className="space-y-1">
                   <p className="text-black text-xs uppercase font-bold tracking-wider">Invoice Number</p>
                   <p className="text-xl font-mono font-bold text-black">{invoice.invoiceNumber}</p>
+                  {invoice.description && (
+                    <div className="pt-2">
+                      <p className="text-black text-xs uppercase font-bold tracking-wider">Description</p>
+                      <p className="text-sm font-medium text-black">{invoice.description}</p>
+                    </div>
+                  )}
                   <div className="pt-2 flex flex-col items-end gap-1 text-sm">
                     <p className="text-black">Issued: <span className="text-black font-semibold">{format(new Date(invoice.date), 'MMMM dd, yyyy')}</span></p>
                     <p className="text-black">Due: <span className="text-black font-semibold">{invoice.dueDate ? format(new Date(invoice.dueDate), 'MMMM dd, yyyy') : 'On Receipt'}</span></p>

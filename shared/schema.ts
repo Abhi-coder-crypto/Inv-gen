@@ -53,6 +53,7 @@ export const invoices = pgTable("invoices", {
   tax: doublePrecision("tax").default(0).notNull(),
   discount: doublePrecision("discount").default(0).notNull(),
   total: doublePrecision("total").notNull(),
+  description: text("description"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
 });

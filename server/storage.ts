@@ -252,6 +252,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
       status: insertInvoice.status || 'pending',
       dueDate: insertInvoice.dueDate || null,
+      description: insertInvoice.description || null,
       notes: insertInvoice.notes || null,
       tax: insertInvoice.tax ? Number(insertInvoice.tax) : 0,
       discount: insertInvoice.discount ? Number(insertInvoice.discount) : 0,

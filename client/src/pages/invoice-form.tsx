@@ -41,6 +41,7 @@ export default function InvoiceForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`,
+      description: "",
       date: new Date(),
       status: 'pending',
       items: [{ description: "", quantity: 1, rate: 0, amount: 0 }],
@@ -127,6 +128,19 @@ export default function InvoiceForm() {
                     <FormLabel>Invoice Number</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g. Service Fee" {...field} value={field.value || ''} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

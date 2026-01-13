@@ -23,11 +23,34 @@
       "serviceName": null
     }
   ],
-  "invoices": [],
+  "invoices": [
+    {
+      "invoiceNumber": "INV-9726",
+      "date": "2026-01-13T12:42:32.778Z",
+      "clientId": 1,
+      "status": "pending",
+      "items": [
+        {
+          "description": "menu",
+          "quantity": 1,
+          "rate": 200,
+          "amount": 200
+        }
+      ],
+      "subtotal": 200,
+      "tax": 0,
+      "discount": 0,
+      "total": 200,
+      "id": 1,
+      "createdAt": "2026-01-13T12:42:47.704Z",
+      "dueDate": null,
+      "notes": null
+    }
+  ],
   "currentId": {
     "users": 2,
     "companies": 1,
     "clients": 2,
-    "invoices": 1
+    "invoices": 2
   }
 }
