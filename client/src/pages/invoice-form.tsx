@@ -7,6 +7,7 @@ import { useCreateInvoice } from "@/hooks/use-invoices";
 import { useClients } from "@/hooks/use-clients";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -135,19 +136,6 @@ export default function InvoiceForm() {
               />
               <FormField
                 control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Service Fee" {...field} value={field.value || ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="clientId"
                 render={({ field }) => (
                   <FormItem>
@@ -209,6 +197,24 @@ export default function InvoiceForm() {
                         <SelectItem value="overdue">Overdue</SelectItem>
                       </SelectContent>
                     </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel>Description (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="e.g. Service Fee" 
+                        className="resize-none"
+                        {...field} 
+                        value={field.value || ''} 
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
