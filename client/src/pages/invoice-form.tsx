@@ -67,7 +67,9 @@ export default function InvoiceForm() {
       return sum + amount;
     }, 0);
     
-    const total = subtotal + (Number(tax) || 0) - (Number(discount) || 0);
+    const taxAmount = Number(tax) || 0;
+    const discountAmount = Number(discount) || 0;
+    const total = subtotal + taxAmount - discountAmount;
 
     form.setValue("subtotal", subtotal, { shouldValidate: true });
     form.setValue("total", total, { shouldValidate: true });
