@@ -69,17 +69,17 @@ export default function InvoiceForm() {
     
     const total = subtotal + (Number(tax) || 0) - (Number(discount) || 0);
 
-    form.setValue("subtotal", subtotal);
-    form.setValue("total", total);
+    form.setValue("subtotal", subtotal, { shouldValidate: true });
+    form.setValue("total", total, { shouldValidate: true });
     
     // Update individual item amounts for display
     items.forEach((item, index) => {
       const amount = (Number(item.quantity) || 0) * (Number(item.rate) || 0);
       if (item.amount !== amount) {
-        form.setValue(`items.${index}.amount`, amount);
+        form.setValue(`items.${index}.amount`, amount, { shouldValidate: true });
       }
     });
-  }, [items, tax, discount, form]);
+  }, [items, tax, discount, form.setValue]);
 
   const onSubmit = (data: FormValues) => {
     createInvoice(data);
