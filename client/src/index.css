@@ -86,19 +86,55 @@
 
 /* Print Styles */
 @media print {
-  @page { margin: 0; }
-  body { 
-    background: white; 
-    color: black;
+  @page { 
+    margin: 10mm;
+    size: auto;
   }
-  .no-print { display: none !important; }
-  .print-only { display: block !important; }
+  
+  body { 
+    background: white !important; 
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .no-print { 
+    display: none !important; 
+  }
+
   .print-content { 
-    padding: 2rem; 
-    width: 100%;
-    margin: 0;
-    box-shadow: none;
-    border: none;
+    padding: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    display: block !important;
+  }
+
+  /* Prevent elements from being cut across pages */
+  tr { 
+    page-break-inside: avoid !important; 
+  }
+  
+  thead { 
+    display: table-header-group !important; 
+  }
+
+  .Card, .CardContent {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Specific spacing for sections to prevent weird breaks */
+  .p-10 {
+    padding: 20px !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Ensure the totals area doesn't get split from the table if possible */
+  .flex.justify-end {
+    page-break-inside: avoid !important;
   }
 }
 

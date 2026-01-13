@@ -33,7 +33,7 @@ export default function InvoiceDetail() {
   if (!invoice) return <div className="p-8 text-center text-destructive">Invoice not found</div>;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto font-['Inter',_sans-serif]">
+    <div className="space-y-6 max-w-5xl mx-auto font-['Inter',_sans-serif] pb-12">
       <div className="flex items-center justify-between no-print">
         <div className="flex items-center gap-4">
           <Link href="/invoices">
