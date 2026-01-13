@@ -100,7 +100,7 @@
   }
 
   /* Force hide anything that might be causing headers/footers */
-  header, footer, .sidebar-trigger, [role="status"], .no-print, [data-sidebar="trigger"] {
+  header, footer, .sidebar-trigger, [role="status"], .no-print, [data-sidebar="trigger"], .sidebar-wrapper {
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
@@ -119,6 +119,7 @@
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
+    background: white !important;
   }
 
   /* Prevent elements from being cut across pages */
