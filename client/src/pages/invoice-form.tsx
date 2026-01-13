@@ -242,7 +242,7 @@ export default function InvoiceForm() {
                     )}
                   />
                   <div className="w-32 pb-2 text-right font-medium">
-                    ${((Number(form.watch(`items.${index}.quantity`)) || 0) * (Number(form.watch(`items.${index}.rate`)) || 0)).toFixed(2)}
+                    ₹{((Number(form.watch(`items.${index}.quantity`)) || 0) * (Number(form.watch(`items.${index}.rate`)) || 0)).toFixed(2)}
                   </div>
                   <Button
                     type="button"
@@ -265,7 +265,7 @@ export default function InvoiceForm() {
                 <div className="w-64 space-y-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>${form.watch("subtotal").toFixed(2)}</span>
+                    <span>₹{form.watch("subtotal").toFixed(2)}</span>
                   </div>
                   <FormField
                     control={form.control}
@@ -293,7 +293,7 @@ export default function InvoiceForm() {
                   />
                   <div className="border-t pt-4 flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-primary">${form.watch("total").toFixed(2)}</span>
+                    <span className="text-primary">₹{form.watch("total").toFixed(2)}</span>
                   </div>
                 </div>
               </div>
