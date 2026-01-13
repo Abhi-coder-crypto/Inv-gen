@@ -16,7 +16,12 @@ async function hashPassword(password: string) {
 }
 
 async function comparePasswords(supplied: string, stored: string) {
-  const [hashed, salt] = stored.split(".");
+  const parts = stored.split(".");
+  if (parts.length !== 2) {
+    // Fallback for plain text passwords (like our initial admin user)
+    return supplied === stored;
+  }
+  const [hashed, salt] = parts;
   const hashedBuf = Buffer.from(hashed, "hex");
   const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
   return timingSafeEqual(hashedBuf, suppliedBuf);
