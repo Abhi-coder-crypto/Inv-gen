@@ -75,11 +75,15 @@ export default function InvoiceForm() {
     // Use a small delay or check for equality to prevent infinite loops
     const currentValues = form.getValues();
     
-    if (Math.abs(currentValues.subtotal - subtotal) > 0.01) {
-      form.setValue("subtotal", subtotal, { shouldValidate: true });
+    // Ensure numeric conversion for accurate comparison
+    const numSubtotal = Number(subtotal) || 0;
+    const numTotal = Number(total) || 0;
+
+    if (Math.abs((Number(currentValues.subtotal) || 0) - numSubtotal) > 0.01) {
+      form.setValue("subtotal", numSubtotal, { shouldValidate: true });
     }
-    if (Math.abs(currentValues.total - total) > 0.01) {
-      form.setValue("total", total, { shouldValidate: true });
+    if (Math.abs((Number(currentValues.total) || 0) - numTotal) > 0.01) {
+      form.setValue("total", numTotal, { shouldValidate: true });
     }
     
     // Update individual item amounts for display

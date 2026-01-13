@@ -164,14 +164,19 @@ export default function InvoiceDetail() {
                 </tr>
               </thead>
               <tbody className="divide-y border-b border-slate-200 text-sm">
-                {invoice.items.map((item: any, index: number) => (
-                  <tr key={index} className="group hover:bg-slate-50 transition-colors">
-                    <td className="py-4 font-medium text-slate-800">{item.description}</td>
-                    <td className="py-4 text-center text-slate-600">{item.quantity}</td>
-                    <td className="py-4 text-right text-slate-600">₹{(Number(item.rate) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td className="py-4 text-right font-medium text-slate-900">₹{(Number(item.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                  </tr>
-                ))}
+                {invoice.items.map((item: any, index: number) => {
+                  const quantity = Number(item.quantity) || 0;
+                  const rate = Number(item.rate) || 0;
+                  const amount = quantity * rate;
+                  return (
+                    <tr key={index} className="group hover:bg-slate-50 transition-colors">
+                      <td className="py-4 font-medium text-slate-800">{item.description}</td>
+                      <td className="py-4 text-center text-slate-600">{quantity}</td>
+                      <td className="py-4 text-right text-slate-600">₹{rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                      <td className="py-4 text-right font-medium text-slate-900">₹{amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

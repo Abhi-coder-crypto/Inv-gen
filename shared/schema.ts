@@ -72,7 +72,14 @@ export const invoicesRelations = relations(invoices, ({ one }) => ({
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 export const insertCompanySchema = createInsertSchema(companies).omit({ id: true });
 export const insertClientSchema = createInsertSchema(clients).omit({ id: true, createdAt: true });
-export const insertInvoiceSchema = createInsertSchema(invoices).omit({ id: true, createdAt: true });
+export const insertInvoiceSchema = createInsertSchema(invoices, {
+  items: z.array(z.object({
+    description: z.string(),
+    quantity: z.number(),
+    rate: z.number(),
+    amount: z.number()
+  }))
+}).omit({ id: true, createdAt: true });
 
 // Types
 export type User = typeof users.$inferSelect;
