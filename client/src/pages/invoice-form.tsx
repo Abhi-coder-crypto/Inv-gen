@@ -71,8 +71,13 @@ export default function InvoiceForm() {
     const discountAmount = Number(discount) || 0;
     const total = subtotal + taxAmount - discountAmount;
 
-    form.setValue("subtotal", subtotal, { shouldValidate: true });
-    form.setValue("total", total, { shouldValidate: true });
+    // Use a small timeout or check for equality to prevent infinite loops if values are already correct
+    if (form.getValues("subtotal") !== subtotal) {
+      form.setValue("subtotal", subtotal, { shouldValidate: true });
+    }
+    if (form.getValues("total") !== total) {
+      form.setValue("total", total, { shouldValidate: true });
+    }
     
     // Update individual item amounts for display
     items.forEach((item, index) => {
