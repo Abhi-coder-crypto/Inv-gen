@@ -51,6 +51,16 @@ export class MemStorage implements IStorage {
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000,
     });
+    
+    // Create initial admin user
+    const adminUser: User = {
+      id: this.currentId.users++,
+      username: "admin",
+      password: "admin123",
+      role: "admin",
+      createdAt: new Date()
+    };
+    this.users.set(adminUser.id, adminUser);
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -63,7 +73,12 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId.users++;
-    const user: User = { ...insertUser, id, role: insertUser.role || "admin" };
+    const user: User = { 
+      ...insertUser, 
+      id, 
+      role: insertUser.role || "admin",
+      createdAt: new Date()
+    };
     this.users.set(id, user);
     return user;
   }
@@ -75,12 +90,40 @@ export class MemStorage implements IStorage {
   async updateCompany(insertCompany: InsertCompany): Promise<Company> {
     const existing = await this.getCompany();
     if (existing) {
-      const updated = { ...existing, ...insertCompany };
+      const updated: Company = { 
+        ...existing, 
+        ...insertCompany,
+        gst: insertCompany.gst ?? null,
+        phone: insertCompany.phone ?? null,
+        email: insertCompany.email ?? null,
+        website: insertCompany.website ?? null,
+        bankName: insertCompany.bankName ?? null,
+        accountNumber: insertCompany.accountNumber ?? null,
+        qrCodeUrl: insertCompany.qrCodeUrl ?? null,
+        logoUrl: insertCompany.logoUrl ?? null,
+        paymentTerms: insertCompany.paymentTerms ?? null,
+        ifsc: (insertCompany as any).ifsc ?? null,
+        upiId: (insertCompany as any).upiId ?? null
+      };
       this.companies.set(existing.id, updated);
       return updated;
     }
     const id = this.currentId.companies++;
-    const company: Company = { ...insertCompany, id };
+    const company: Company = { 
+      ...insertCompany, 
+      id,
+      gst: insertCompany.gst ?? null,
+      phone: insertCompany.phone ?? null,
+      email: insertCompany.email ?? null,
+      website: insertCompany.website ?? null,
+      bankName: insertCompany.bankName ?? null,
+      accountNumber: insertCompany.accountNumber ?? null,
+      qrCodeUrl: insertCompany.qrCodeUrl ?? null,
+      logoUrl: insertCompany.logoUrl ?? null,
+      paymentTerms: insertCompany.paymentTerms ?? null,
+      ifsc: (insertCompany as any).ifsc ?? null,
+      upiId: (insertCompany as any).upiId ?? null
+    };
     this.companies.set(id, company);
     return company;
   }
@@ -102,7 +145,12 @@ export class MemStorage implements IStorage {
       id, 
       createdAt: new Date(),
       logoUrl: insertClient.logoUrl || null,
-      gst: insertClient.gst || null
+      gst: insertClient.gst || null,
+      address: insertClient.address || null,
+      phone: insertClient.phone || null,
+      email: insertClient.email || null,
+      companyName: insertClient.companyName || null,
+      serviceName: insertClient.serviceName || null
     };
     this.clients.set(id, client);
     return client;
@@ -111,7 +159,7 @@ export class MemStorage implements IStorage {
   async updateClient(id: number, updates: Partial<InsertClient>): Promise<Client> {
     const client = this.clients.get(id);
     if (!client) throw new Error("Client not found");
-    const updated = { ...client, ...updates };
+    const updated = { ...client, ...updates } as Client;
     this.clients.set(id, updated);
     return updated;
   }
@@ -139,12 +187,14 @@ export class MemStorage implements IStorage {
       ...insertInvoice, 
       id, 
       createdAt: new Date(),
+      status: insertInvoice.status || 'pending',
       dueDate: insertInvoice.dueDate || null,
       notes: insertInvoice.notes || null,
-      tax: insertInvoice.tax || "0",
-      discount: insertInvoice.discount || "0",
-      subtotal: insertInvoice.subtotal || "0",
-      total: insertInvoice.total || "0"
+      tax: insertInvoice.tax ? Number(insertInvoice.tax) : 0,
+      discount: insertInvoice.discount ? Number(insertInvoice.discount) : 0,
+      subtotal: insertInvoice.subtotal ? Number(insertInvoice.subtotal) : 0,
+      total: insertInvoice.total ? Number(insertInvoice.total) : 0,
+      items: (insertInvoice.items as any) || []
     };
     this.invoices.set(id, invoice);
     return invoice;
@@ -153,7 +203,7 @@ export class MemStorage implements IStorage {
   async updateInvoice(id: number, updates: Partial<InsertInvoice>): Promise<Invoice> {
     const invoice = this.invoices.get(id);
     if (!invoice) throw new Error("Invoice not found");
-    const updated = { ...invoice, ...updates };
+    const updated = { ...invoice, ...updates } as Invoice;
     this.invoices.set(id, updated);
     return updated;
   }
