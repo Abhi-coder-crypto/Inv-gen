@@ -91,6 +91,12 @@
     size: auto;
   }
   
+  /* Hide browser default header and footer (URLs/Dates) */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
   body { 
     background: white !important; 
     color: black !important;
@@ -98,7 +104,7 @@
     margin: 0 !important;
   }
 
-  .no-print { 
+  .no-print, [role="status"] { 
     display: none !important; 
   }
 
