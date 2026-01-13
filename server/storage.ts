@@ -213,6 +213,5 @@ export class MemStorage implements IStorage {
     return this.invoices.delete(id);
   }
 }
-}
 
 export const storage = new MemStorage();
