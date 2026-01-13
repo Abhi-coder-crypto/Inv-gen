@@ -135,8 +135,8 @@ export default function InvoiceDetail() {
                   <tr key={index} className="group hover:bg-slate-50 transition-colors">
                     <td className="py-4 font-medium text-slate-800">{item.description}</td>
                     <td className="py-4 text-center text-slate-600">{item.quantity}</td>
-                    <td className="py-4 text-right text-slate-600">₹{item.rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                    <td className="py-4 text-right font-medium text-slate-900">₹{item.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="py-4 text-right text-slate-600">₹{(Number(item.rate) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                    <td className="py-4 text-right font-medium text-slate-900">₹{(Number(item.amount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                   </tr>
                 ))}
               </tbody>
@@ -148,19 +148,19 @@ export default function InvoiceDetail() {
             <div className="w-64 space-y-1 bg-slate-50 p-4 rounded border">
               <div className="flex justify-between text-xs">
                 <span className="text-slate-500 uppercase tracking-widest text-[9px]">Subtotal</span>
-                <span className="font-medium text-slate-900">₹{invoice.subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span className="font-medium text-slate-900">₹{(Number(invoice.subtotal) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-slate-500 uppercase tracking-widest text-[9px]">Tax</span>
-                <span className="font-medium text-slate-900">₹{invoice.tax.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span className="font-medium text-slate-900">₹{(Number(invoice.tax) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="flex justify-between text-xs">
                 <span className="text-slate-500 uppercase tracking-widest text-[9px]">Discount</span>
-                <span className="font-medium text-rose-600">-₹{invoice.discount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span className="font-medium text-rose-600">-₹{(Number(invoice.discount) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <div className="pt-2 mt-2 border-t border-slate-200 flex justify-between items-baseline">
                 <span className="text-slate-900 font-bold uppercase tracking-widest text-[10px]">Total</span>
-                <span className="text-lg font-bold text-slate-900">₹{invoice.total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span className="text-lg font-bold text-slate-900">₹{(Number(invoice.total) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
             </div>
           </div>
@@ -184,7 +184,6 @@ export default function InvoiceDetail() {
                       <div className="space-y-3">
                         {company?.bankName && <p className="text-slate-900 font-bold text-base leading-tight uppercase tracking-tight">{company.bankName}</p>}
                         <div className="space-y-2 text-xs text-slate-600">
-                          {company?.accountName && <p><span className="text-slate-400 font-bold uppercase text-[9px] tracking-widest block mb-0.5">Account Name</span><span className="text-slate-900 font-medium">{(company as any).accountName}</span></p>}
                           {company?.accountNumber && <p><span className="text-slate-400 font-bold uppercase text-[9px] tracking-widest block mb-0.5">Account Number</span><span className="text-slate-900 font-mono font-medium">{company.accountNumber}</span></p>}
                           {(company as any)?.ifscCode && <p><span className="text-slate-400 font-bold uppercase text-[9px] tracking-widest block mb-0.5">IFSC Code</span><span className="text-slate-900 font-medium">{ (company as any).ifscCode }</span></p>}
                           {(company as any)?.upiId && <p><span className="text-slate-400 font-bold uppercase text-[9px] tracking-widest block mb-0.5">UPI ID</span><span className="text-slate-900 font-medium">{ (company as any).upiId }</span></p>}
