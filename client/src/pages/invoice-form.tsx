@@ -71,18 +71,22 @@ export default function InvoiceForm() {
     const discountAmount = Number(discount) || 0;
     const total = subtotal + taxAmount - discountAmount;
 
-    // Use a small timeout or check for equality to prevent infinite loops if values are already correct
-    if (form.getValues("subtotal") !== subtotal) {
+    // Batch updates to avoid multiple re-renders and potential race conditions
+    // Use a small delay or check for equality to prevent infinite loops
+    const currentValues = form.getValues();
+    
+    if (Math.abs(currentValues.subtotal - subtotal) > 0.01) {
       form.setValue("subtotal", subtotal, { shouldValidate: true });
     }
-    if (form.getValues("total") !== total) {
+    if (Math.abs(currentValues.total - total) > 0.01) {
       form.setValue("total", total, { shouldValidate: true });
     }
     
     // Update individual item amounts for display
     items.forEach((item, index) => {
       const amount = (Number(item.quantity) || 0) * (Number(item.rate) || 0);
-      if (item.amount !== amount) {
+      const currentItemAmount = Number(form.getValues(`items.${index}.amount`)) || 0;
+      if (Math.abs(currentItemAmount - amount) > 0.01) {
         form.setValue(`items.${index}.amount`, amount, { shouldValidate: true });
       }
     });
