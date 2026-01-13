@@ -56,6 +56,30 @@ export function useCreateInvoice() {
   });
 }
 
+export function useDeleteInvoice() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`/api/invoices/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete invoice");
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.invoices.list.path] });
+      toast({ title: "Success", description: "Invoice deleted successfully" });
+      setLocation("/invoices");
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
+  });
+}
+
 export function useUpdateInvoice() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -74,6 +98,30 @@ export function useUpdateInvoice() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [api.invoices.list.path] });
       toast({ title: "Success", description: "Invoice updated successfully" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    },
+  });
+}
+
+export function useDeleteInvoice() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`/api/invoices/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete invoice");
+      return true;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.invoices.list.path] });
+      toast({ title: "Success", description: "Invoice deleted successfully" });
+      setLocation("/invoices");
     },
     onError: (error: Error) => {
       toast({ title: "Error", description: error.message, variant: "destructive" });

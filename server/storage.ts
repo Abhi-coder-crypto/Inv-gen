@@ -32,6 +32,7 @@ export interface IStorage {
   getInvoice(id: number): Promise<(Invoice & { client: Client }) | undefined>;
   createInvoice(invoice: InsertInvoice): Promise<Invoice>;
   updateInvoice(id: number, invoice: Partial<InsertInvoice>): Promise<Invoice>;
+  deleteInvoice(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -207,6 +208,11 @@ export class MemStorage implements IStorage {
     this.invoices.set(id, updated);
     return updated;
   }
+
+  async deleteInvoice(id: number): Promise<boolean> {
+    return this.invoices.delete(id);
+  }
+}
 }
 
 export const storage = new MemStorage();

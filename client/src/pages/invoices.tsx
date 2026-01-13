@@ -1,14 +1,26 @@
 import { Link } from "wouter";
-import { useInvoices } from "@/hooks/use-invoices";
+import { useInvoices, useDeleteInvoice } from "@/hooks/use-invoices";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, FileText } from "lucide-react";
+import { Plus, Search, FileText, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function Invoices() {
   const { data: invoices, isLoading } = useInvoices();
+  const { mutate: deleteInvoice } = useDeleteInvoice();
   const [search, setSearch] = useState("");
 
   const filteredInvoices = invoices?.filter(inv => 
@@ -49,34 +61,60 @@ export default function Invoices() {
       ) : (
         <div className="grid gap-4">
           {filteredInvoices?.map((invoice) => (
-            <Link key={invoice.id} href={`/invoices/${invoice.id}`}>
-              <Card className="hover:border-primary/50 transition-colors cursor-pointer group">
-                <CardContent className="p-5 flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <FileText className="h-5 w-5" />
+            <div key={invoice.id} className="relative group">
+              <Link href={`/invoices/${invoice.id}`}>
+                <Card className="hover:border-primary/50 transition-colors cursor-pointer group pr-16">
+                  <CardContent className="p-5 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-full bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        <FileText className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-foreground">{invoice.client?.name}</h4>
+                        <p className="text-sm text-muted-foreground">{invoice.invoiceNumber} • {format(new Date(invoice.date), 'MMM dd, yyyy')}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground">{invoice.client?.name}</h4>
-                      <p className="text-sm text-muted-foreground">{invoice.invoiceNumber} • {format(new Date(invoice.date), 'MMM dd, yyyy')}</p>
+                    
+                    <div className="flex items-center gap-6">
+                      <div className="text-right hidden sm:block">
+                        <p className="font-bold text-foreground">₹{invoice.total.toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground">INR</p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize border
+                        ${invoice.status === 'paid' ? 'bg-green-500/10 text-green-700 border-green-200' : 
+                          invoice.status === 'pending' ? 'bg-amber-500/10 text-amber-700 border-amber-200' : 
+                          'bg-red-500/10 text-red-700 border-red-200'}`}>
+                        {invoice.status}
+                      </span>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-6">
-                    <div className="text-right hidden sm:block">
-                      <p className="font-bold text-foreground">₹{invoice.total.toLocaleString()}</p>
-                      <p className="text-xs text-muted-foreground">INR</p>
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize border
-                      ${invoice.status === 'paid' ? 'bg-green-500/10 text-green-700 border-green-200' : 
-                        invoice.status === 'pending' ? 'bg-amber-500/10 text-amber-700 border-amber-200' : 
-                        'bg-red-500/10 text-red-700 border-red-200'}`}>
-                      {invoice.status}
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
+                  </CardContent>
+                </Card>
+              </Link>
+              
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Invoice</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete this invoice? This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => deleteInvoice(invoice.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </div>
           ))}
 
           {filteredInvoices?.length === 0 && (

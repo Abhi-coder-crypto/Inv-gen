@@ -130,6 +130,12 @@ export async function registerRoutes(
     res.json(invoice);
   });
 
+  app.delete("/api/invoices/:id", isAuthenticated, async (req, res) => {
+    const success = await storage.deleteInvoice(Number(req.params.id));
+    if (!success) return res.status(404).json({ message: "Invoice not found" });
+    res.sendStatus(204);
+  });
+
   // Seed Data
   if ((await storage.getClients()).length === 0) {
     console.log("Seeding data...");

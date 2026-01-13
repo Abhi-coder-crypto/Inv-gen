@@ -1,17 +1,29 @@
 import { useRoute, Link } from "wouter";
-import { useInvoice } from "@/hooks/use-invoices";
+import { useInvoice, useDeleteInvoice } from "@/hooks/use-invoices";
 import { useCompany } from "@/hooks/use-company";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Printer, Download, Mail } from "lucide-react";
+import { ArrowLeft, Printer, Download, Mail, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function InvoiceDetail() {
   const [, params] = useRoute("/invoices/:id");
   const id = Number(params?.id);
   const { data: invoice, isLoading } = useInvoice(id);
   const { data: company } = useCompany();
+  const { mutate: deleteInvoice } = useDeleteInvoice();
 
   const handlePrint = () => {
     window.print();
@@ -32,6 +44,27 @@ export default function InvoiceDetail() {
           <h2 className="text-2xl font-display font-bold">Invoice {invoice.invoiceNumber}</h2>
         </div>
         <div className="flex gap-2">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" className="text-destructive hover:bg-destructive/10">
+                <Trash2 className="h-4 w-4 mr-2" /> Delete
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Invoice</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete this invoice? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => deleteInvoice(invoice.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button variant="outline" onClick={handlePrint}>
             <Printer className="h-4 w-4 mr-2" /> Print
           </Button>
