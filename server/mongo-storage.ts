@@ -19,9 +19,12 @@ export class MongoStorage implements IStorage {
     try {
       const admin = await Admin.findOne({ username: "admin" });
       if (!admin) {
+        // Import hashing function from auth to store password securely
+        const { hashPassword } = await import("./auth");
+        const hashedPassword = await hashPassword("admin123");
         await Admin.create({
           username: "admin",
-          password: "admin123",
+          password: hashedPassword,
           role: "admin"
         });
       }
