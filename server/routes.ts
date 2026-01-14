@@ -85,7 +85,7 @@ export async function registerRoutes(
   });
 
   app.get(api.clients.get.path, isAuthenticated, async (req, res) => {
-    const client = await storage.getClient(Number(req.params.id));
+    const client = await storage.getClient(req.params.id);
     if (!client) return res.status(404).json({ message: "Client not found" });
     res.json(client);
   });
@@ -98,7 +98,7 @@ export async function registerRoutes(
 
   app.put(api.clients.update.path, isAuthenticated, async (req, res) => {
     const input = api.clients.update.input.parse(req.body);
-    const client = await storage.updateClient(Number(req.params.id), input);
+    const client = await storage.updateClient(req.params.id, input);
     res.json(client);
   });
 
@@ -109,7 +109,7 @@ export async function registerRoutes(
   });
 
   app.get(api.invoices.get.path, isAuthenticated, async (req, res) => {
-    const invoice = await storage.getInvoice(Number(req.params.id));
+    const invoice = await storage.getInvoice(req.params.id);
     if (!invoice) return res.status(404).json({ message: "Invoice not found" });
     res.json(invoice);
   });
@@ -126,12 +126,12 @@ export async function registerRoutes(
 
   app.put(api.invoices.update.path, isAuthenticated, async (req, res) => {
     const input = api.invoices.update.input.parse(req.body);
-    const invoice = await storage.updateInvoice(Number(req.params.id), input);
+    const invoice = await storage.updateInvoice(req.params.id, input);
     res.json(invoice);
   });
 
   app.delete("/api/invoices/:id", isAuthenticated, async (req, res) => {
-    const success = await storage.deleteInvoice(Number(req.params.id));
+    const success = await storage.deleteInvoice(req.params.id);
     if (!success) return res.status(404).json({ message: "Invoice not found" });
     res.sendStatus(204);
   });
