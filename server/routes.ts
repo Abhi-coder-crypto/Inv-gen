@@ -109,9 +109,17 @@ export async function registerRoutes(
   });
 
   app.get(api.invoices.get.path, isAuthenticated, async (req, res) => {
-    const invoice = await storage.getInvoice(req.params.id);
-    if (!invoice) return res.status(404).json({ message: "Invoice not found" });
-    res.json(invoice);
+    try {
+      if (!req.params.id || req.params.id === "undefined") {
+        return res.status(400).json({ message: "Invalid invoice ID" });
+      }
+      const invoice = await storage.getInvoice(req.params.id);
+      if (!invoice) return res.status(404).json({ message: "Invoice not found" });
+      res.json(invoice);
+    } catch (error: any) {
+      console.error("Error fetching invoice:", error);
+      res.status(500).json({ message: error.message || "Failed to fetch invoice" });
+    }
   });
 
   app.post(api.invoices.create.path, isAuthenticated, async (req, res) => {

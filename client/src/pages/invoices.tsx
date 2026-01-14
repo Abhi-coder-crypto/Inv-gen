@@ -60,62 +60,65 @@ export default function Invoices() {
         </div>
       ) : (
         <div className="grid gap-4">
-          {filteredInvoices?.map((invoice) => (
-            <div key={invoice.id} className="relative group">
-              <Link href={`/invoices/${invoice.id}`}>
-                <Card className="hover:border-primary/50 transition-colors cursor-pointer group pr-16">
-                  <CardContent className="p-5 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 rounded-full bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <FileText className="h-5 w-5" />
+          {filteredInvoices?.map((invoice) => {
+            const invoiceId = invoice.id || (invoice as any)._id;
+            return (
+              <div key={invoiceId} className="relative group">
+                <Link href={`/invoices/${invoiceId}`}>
+                  <Card className="hover:border-primary/50 transition-colors cursor-pointer group pr-16">
+                    <CardContent className="p-5 flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="h-10 w-10 rounded-full bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                          <FileText className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-foreground">{invoice.client?.name}</h4>
+                          <p className="text-sm text-muted-foreground">{invoice.invoiceNumber} • {format(new Date(invoice.date), 'MMM dd, yyyy')}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h4 className="font-semibold text-foreground">{invoice.client?.name}</h4>
-                        <p className="text-sm text-muted-foreground">{invoice.invoiceNumber} • {format(new Date(invoice.date), 'MMM dd, yyyy')}</p>
+                      
+                      <div className="flex items-center gap-6">
+                        <div className="text-right hidden sm:block">
+                          <p className="font-bold text-foreground">₹{invoice.total.toLocaleString()}</p>
+                          <p className="text-xs text-muted-foreground">INR</p>
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize border
+                          ${invoice.status === 'paid' ? 'bg-green-500/10 text-green-700 border-green-200' : 
+                            invoice.status === 'pending' ? 'bg-amber-500/10 text-amber-700 border-amber-200' : 
+                            'bg-red-500/10 text-red-700 border-red-200'}`}>
+                          {invoice.status}
+                        </span>
                       </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-6">
-                      <div className="text-right hidden sm:block">
-                        <p className="font-bold text-foreground">₹{invoice.total.toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground">INR</p>
-                      </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize border
-                        ${invoice.status === 'paid' ? 'bg-green-500/10 text-green-700 border-green-200' : 
-                          invoice.status === 'pending' ? 'bg-amber-500/10 text-amber-700 border-amber-200' : 
-                          'bg-red-500/10 text-red-700 border-red-200'}`}>
-                        {invoice.status}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-              
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Invoice</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to delete this invoice? This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => deleteInvoice(invoice.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                    </CardContent>
+                  </Card>
+                </Link>
+                
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Invoice</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this invoice? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => deleteInvoice(invoiceId)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {filteredInvoices?.length === 0 && (
             <div className="text-center py-12">
