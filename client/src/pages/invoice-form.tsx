@@ -26,7 +26,7 @@ const formSchema = insertInvoiceSchema.extend({
   discount: z.coerce.number().default(0),
   subtotal: z.coerce.number(),
   total: z.coerce.number(),
-  clientId: z.coerce.number().min(1, "Client required"),
+  clientId: z.string().min(1, "Client required"),
   date: z.coerce.date(),
   dueDate: z.coerce.date().optional(),
 });
@@ -64,6 +64,7 @@ export default function InvoiceForm() {
   const discount = form.watch("discount");
 
   useEffect(() => {
+    if (!items) return;
     const subtotal = items.reduce((sum, item) => {
       const amount = (Number(item.quantity) || 0) * (Number(item.rate) || 0);
       return sum + amount;
@@ -73,11 +74,7 @@ export default function InvoiceForm() {
     const discountAmount = Number(discount) || 0;
     const total = subtotal + taxAmount - discountAmount;
 
-    // Batch updates to avoid multiple re-renders and potential race conditions
-    // Use a small delay or check for equality to prevent infinite loops
     const currentValues = form.getValues();
-    
-    // Ensure numeric conversion for accurate comparison
     const numSubtotal = Number(subtotal) || 0;
     const numTotal = Number(total) || 0;
 
@@ -88,7 +85,6 @@ export default function InvoiceForm() {
       form.setValue("total", numTotal, { shouldValidate: true });
     }
     
-    // Update individual item amounts for display
     items.forEach((item, index) => {
       const amount = (Number(item.quantity) || 0) * (Number(item.rate) || 0);
       const currentItemAmount = Number(form.getValues(`items.${index}.amount`)) || 0;
@@ -141,7 +137,7 @@ export default function InvoiceForm() {
                   <FormItem>
                     <FormLabel>Client</FormLabel>
                     <Select 
-                      onValueChange={(val) => field.onChange(Number(val))} 
+                      onValueChange={(val) => field.onChange(val)} 
                       defaultValue={field.value?.toString()}
                     >
                       <FormControl>
@@ -150,11 +146,14 @@ export default function InvoiceForm() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {clients?.map((client) => (
-                          <SelectItem key={client.id} value={client.id.toString()}>
-                            {client.name}
-                          </SelectItem>
-                        ))}
+                        {clients?.map((client) => {
+                          const clientId = client.id || (client as any)._id;
+                          return (
+                            <SelectItem key={clientId.toString()} value={clientId.toString()}>
+                              {client.name}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                     <FormMessage />
