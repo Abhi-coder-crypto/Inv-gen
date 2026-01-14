@@ -105,9 +105,6 @@ export default function InvoiceDetail() {
                 </div>
               </div>
               <div className="text-right flex flex-col items-end">
-                <div className="mb-6">
-                  <h2 className="text-4xl font-bold text-slate-100 uppercase tracking-tight leading-none">Invoice</h2>
-                </div>
                 <div className="space-y-1">
                   <p className="text-black text-xs uppercase font-bold tracking-wider">Invoice Number</p>
                   <p className="text-xl font-mono font-bold text-black">{invoice.invoiceNumber}</p>
