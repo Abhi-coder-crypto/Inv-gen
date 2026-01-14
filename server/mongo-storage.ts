@@ -46,11 +46,52 @@ export class MongoStorage implements IStorage {
   }
 
   async getCompany(): Promise<any> {
-    return Admin.findOne({ role: "admin" });
+    const admin = await Admin.findOne({ role: "admin" });
+    if (!admin) return null;
+    
+    // Return company details stored on the admin document
+    return {
+      name: admin.companyName || admin.name || "My Company",
+      address: admin.address || "",
+      gst: admin.gst || "",
+      phone: admin.phone || "",
+      email: admin.email || "",
+      website: admin.website || "",
+      bankName: admin.bankName || "",
+      accountNumber: admin.accountNumber || "",
+      ifsc: admin.ifsc || "",
+      upiId: admin.upiId || "",
+      logoUrl: admin.logoUrl || "",
+      qrCodeUrl: admin.qrCodeUrl || "",
+      paymentTerms: admin.paymentTerms || "",
+    };
   }
 
-  async updateCompany(company: any): Promise<any> {
-    return Admin.findOneAndUpdate({ role: "admin" }, company, { new: true });
+  async updateCompany(companyData: any): Promise<any> {
+    // Map frontend fields to schema fields if necessary
+    const updateData = {
+      companyName: companyData.name,
+      address: companyData.address,
+      gst: companyData.gst,
+      phone: companyData.phone,
+      email: companyData.email,
+      website: companyData.website,
+      bankName: companyData.bankName,
+      accountNumber: companyData.accountNumber,
+      ifsc: companyData.ifsc,
+      upiId: companyData.upiId,
+      logoUrl: companyData.logoUrl,
+      qrCodeUrl: companyData.qrCodeUrl,
+      paymentTerms: companyData.paymentTerms,
+    };
+    
+    const admin = await Admin.findOneAndUpdate(
+      { role: "admin" }, 
+      { $set: updateData }, 
+      { new: true }
+    );
+    
+    return this.getCompany();
   }
 
   async getClients(): Promise<any[]> {
