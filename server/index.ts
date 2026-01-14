@@ -8,7 +8,10 @@ if (!process.env.MONGODB_URI) {
   throw new Error("MONGODB_URI environment variable is required");
 }
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 5000,
+  connectTimeoutMS: 10000,
+})
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 

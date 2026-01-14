@@ -16,13 +16,17 @@ export class MongoStorage implements IStorage {
   }
 
   private async initAdmin() {
-    const admin = await Admin.findOne({ username: "admin" });
-    if (!admin) {
-      await Admin.create({
-        username: "admin",
-        password: "admin123",
-        role: "admin"
-      });
+    try {
+      const admin = await Admin.findOne({ username: "admin" });
+      if (!admin) {
+        await Admin.create({
+          username: "admin",
+          password: "admin123",
+          role: "admin"
+        });
+      }
+    } catch (err) {
+      console.error("Admin init error:", err);
     }
   }
 
@@ -39,7 +43,6 @@ export class MongoStorage implements IStorage {
   }
 
   async getCompany(): Promise<any> {
-    // For this specific structure, we'll keep company details separate or treat Admin as the company owner
     return Admin.findOne({ role: "admin" });
   }
 
@@ -77,10 +80,9 @@ export class MongoStorage implements IStorage {
 
     const invoice = await Invoice.create({
       ...invoiceData,
-      client: client.toObject() // Embed client in invoice
+      client: client.toObject()
     });
 
-    // Add invoice reference to client
     await Client.findByIdAndUpdate(client._id, {
       $push: { invoices: invoice._id }
     });
@@ -96,7 +98,6 @@ export class MongoStorage implements IStorage {
     const invoice = await Invoice.findById(id);
     if (!invoice) return false;
 
-    // Remove reference from client
     await Client.findByIdAndUpdate(invoice.clientId, {
       $pull: { invoices: id }
     });
