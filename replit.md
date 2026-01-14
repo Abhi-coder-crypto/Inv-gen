@@ -1,8 +1,8 @@
-# InvoiceFlow - Invoice Generator Web Application
+# Invoice-Gen - Invoice Generator Web Application
 
 ## Overview
 
-InvoiceFlow is a modern, full-stack invoice generator web application designed for professional invoice creation, client management, payment tracking, and export functionality. The application provides a complete business invoicing solution with features including company profile management, client database, invoice generation with line items, payment status tracking, and dashboard analytics.
+Invoice-Gen is a modern, full-stack invoice generator web application designed for professional invoice creation, client management, payment tracking, and export functionality. The application provides a complete business invoicing solution with features including company profile management, client database, invoice generation with line items, payment status tracking, and dashboard analytics.
 
 The tech stack consists of a React frontend with TypeScript, Express.js backend, PostgreSQL database with Drizzle ORM, and shadcn/ui component library for the user interface.
 

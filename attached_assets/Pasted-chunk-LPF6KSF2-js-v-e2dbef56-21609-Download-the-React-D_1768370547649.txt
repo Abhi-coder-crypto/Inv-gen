@@ -1,0 +1,62 @@
+chunk-LPF6KSF2.js?v=e2dbef56:21609 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+invoice-form.tsx:154 Uncaught TypeError: Cannot read properties of undefined (reading 'toString')
+    at invoice-form.tsx:154:72
+    at Array.map (<anonymous>)
+    at Object.render (invoice-form.tsx:153:35)
+    at Controller (chunk-JUBIUOWM.js?v=e2dbef56:298:35)
+    at renderWithHooks (chunk-LPF6KSF2.js?v=e2dbef56:11596:26)
+    at mountIndeterminateComponent (chunk-LPF6KSF2.js?v=e2dbef56:14974:21)
+    at beginWork (chunk-LPF6KSF2.js?v=e2dbef56:15962:22)
+    at HTMLUnknownElement.callCallback2 (chunk-LPF6KSF2.js?v=e2dbef56:3680:22)
+    at Object.invokeGuardedCallbackDev (chunk-LPF6KSF2.js?v=e2dbef56:3705:24)
+    at invokeGuardedCallback (chunk-LPF6KSF2.js?v=e2dbef56:3739:39)
+invoice-form.tsx:154 Uncaught TypeError: Cannot read properties of undefined (reading 'toString')
+    at invoice-form.tsx:154:72
+    at Array.map (<anonymous>)
+    at Object.render (invoice-form.tsx:153:35)
+    at Controller (chunk-JUBIUOWM.js?v=e2dbef56:298:35)
+    at renderWithHooks (chunk-LPF6KSF2.js?v=e2dbef56:11596:26)
+    at mountIndeterminateComponent (chunk-LPF6KSF2.js?v=e2dbef56:14974:21)
+    at beginWork (chunk-LPF6KSF2.js?v=e2dbef56:15962:22)
+    at HTMLUnknownElement.callCallback2 (chunk-LPF6KSF2.js?v=e2dbef56:3680:22)
+    at Object.invokeGuardedCallbackDev (chunk-LPF6KSF2.js?v=e2dbef56:3705:24)
+    at invokeGuardedCallback (chunk-LPF6KSF2.js?v=e2dbef56:3739:39)
+chunk-LPF6KSF2.js?v=e2dbef56:14080 The above error occurred in the <Controller> component:
+
+    at Controller (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-JUBIUOWM.js?v=e2dbef56:298:35)
+    at FormField (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/src/components/ui/form.tsx:33:6)
+    at div
+    at _c9 (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/src/components/ui/card.tsx:114:12)
+    at div
+    at _c (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/src/components/ui/card.tsx:20:11)
+    at form
+    at FormProvider (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-JUBIUOWM.js?v=e2dbef56:102:11)
+    at div
+    at InvoiceForm (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/src/pages/invoice-form.tsx:50:27)
+    at div
+    at main
+    at div
+    at Layout (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/src/components/layout.tsx:33:26)
+    at ProtectedRoute (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/src/App.tsx:35:38)
+    at Route (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=e2dbef56:322:16)
+    at Switch (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=e2dbef56:378:17)
+    at Router
+    at Provider (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-N4W4ACQW.js?v=e2dbef56:37:15)
+    at TooltipProvider (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=e2dbef56:61:5)
+    at QueryClientProvider (https://2bf6e66d-a36f-481a-b1ca-58bfcaa57e8f-00-6nwsrmlujmq3.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=e2dbef56:2747:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+logCapturedError @ chunk-LPF6KSF2.js?v=e2dbef56:14080
+chunk-LPF6KSF2.js?v=e2dbef56:9176 Uncaught TypeError: Cannot read properties of undefined (reading 'toString')
+    at invoice-form.tsx:154:72
+    at Array.map (<anonymous>)
+    at Object.render (invoice-form.tsx:153:35)
+    at Controller (chunk-JUBIUOWM.js?v=e2dbef56:298:35)
+    at renderWithHooks (chunk-LPF6KSF2.js?v=e2dbef56:11596:26)
+    at mountIndeterminateComponent (chunk-LPF6KSF2.js?v=e2dbef56:14974:21)
+    at beginWork (chunk-LPF6KSF2.js?v=e2dbef56:15962:22)
+    at beginWork$1 (chunk-LPF6KSF2.js?v=e2dbef56:19806:22)
+    at performUnitOfWork (chunk-LPF6KSF2.js?v=e2dbef56:19251:20)
+    at workLoopSync (chunk-LPF6KSF2.js?v=e2dbef56:19190:13)
