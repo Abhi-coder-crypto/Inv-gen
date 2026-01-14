@@ -12,8 +12,8 @@ export default function ClientDetail() {
   const { data: clients } = useClients();
   const { data: invoices } = useInvoices();
 
-  const client = clients?.find(c => (c as any)._id === id || c.id === id);
-  const clientInvoices = invoices?.filter(inv => inv.clientId === id || (inv as any).clientId?._id === id);
+  const client = clients?.find(c => (c as any)._id === id || String(c.id) === String(id));
+  const clientInvoices = invoices?.filter(inv => String(inv.clientId) === String(id) || (inv as any).clientId?._id === id);
 
   if (!client) return <div className="p-8 text-center animate-pulse">Loading client details...</div>;
 
