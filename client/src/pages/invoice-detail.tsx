@@ -26,7 +26,10 @@ export default function InvoiceDetail() {
   const { mutate: deleteInvoice } = useDeleteInvoice();
 
   const handlePrint = () => {
+    const originalTitle = document.title;
+    document.title = `Invoice_${invoice.invoiceNumber}`;
     window.print();
+    document.title = originalTitle;
   };
 
   if (isLoading) return <div className="p-8 text-center animate-pulse">Loading invoice...</div>;
