@@ -31,7 +31,7 @@ const formSchema = insertInvoiceSchema.extend({
   dueDate: z.coerce.date().optional(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = Omit<z.infer<typeof formSchema>, 'clientId'> & { clientId: any };
 
 export default function InvoiceForm() {
   const [, setLocation] = useLocation();
@@ -299,7 +299,7 @@ export default function InvoiceForm() {
                 <div className="w-64 space-y-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span>₹{form.watch("subtotal").toFixed(2)}</span>
+                    <span>₹{(Number(form.watch("subtotal")) || 0).toFixed(2)}</span>
                   </div>
                   <FormField
                     control={form.control}
@@ -327,7 +327,7 @@ export default function InvoiceForm() {
                   />
                   <div className="border-t pt-4 flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-primary">₹{form.watch("total").toFixed(2)}</span>
+                    <span className="text-primary">₹{(Number(form.watch("total")) || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
