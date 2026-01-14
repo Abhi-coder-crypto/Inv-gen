@@ -31,7 +31,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const Sidebar = () => (
     <div className="flex flex-col h-full bg-slate-900 text-slate-300 border-r border-slate-800">
       <div className="p-6 flex items-center gap-3 border-b border-slate-800 bg-slate-900/50">
-        <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center p-2 border border-primary/20">
+        <div className="h-10 w-10 rounded-xl bg-white flex items-center justify-center p-2 border border-slate-200 shadow-sm">
           <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
         </div>
         <div className="flex flex-col">
