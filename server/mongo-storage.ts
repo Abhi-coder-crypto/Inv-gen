@@ -83,10 +83,10 @@ export class MongoStorage implements IStorage {
     const client = await Client.findById(invoiceData.clientId);
     if (!client) throw new Error("Client not found");
 
-    // Generate sequential invoice number: client-001-invoice-001
+    // Generate sequential invoice number: client-001-Inv-001
     const invoiceCount = await Invoice.countDocuments({ clientId: client._id });
     const clientPart = client.customId || `client-${client._id.toString().slice(-3)}`;
-    const invoiceNumber = `${clientPart}-invoice-${(invoiceCount + 1).toString().padStart(3, '0')}`;
+    const invoiceNumber = `${clientPart}-Inv-${(invoiceCount + 1).toString().padStart(3, '0')}`;
 
     const invoice = await Invoice.create({
       ...invoiceData,
