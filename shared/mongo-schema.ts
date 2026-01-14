@@ -10,6 +10,7 @@ const adminSchema = new mongoose.Schema({
 
 // Client Schema (Embedded in Invoices or referenced)
 const clientSchema = new mongoose.Schema({
+  customId: { type: String, unique: true }, // For "client-001" format
   name: { type: String, required: true },
   companyName: String,
   serviceName: String,

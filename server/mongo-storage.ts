@@ -62,7 +62,9 @@ export class MongoStorage implements IStorage {
   }
 
   async createClient(clientData: any): Promise<any> {
-    return Client.create(clientData);
+    const count = await Client.countDocuments();
+    const customId = `client-${(count + 1).toString().padStart(3, '0')}`;
+    return Client.create({ ...clientData, customId });
   }
 
   async updateClient(id: any, clientData: any): Promise<any> {
@@ -81,11 +83,17 @@ export class MongoStorage implements IStorage {
     const client = await Client.findById(invoiceData.clientId);
     if (!client) throw new Error("Client not found");
 
+    // Generate sequential invoice number: client-001-invoice-001
+    const invoiceCount = await Invoice.countDocuments({ clientId: client._id });
+    const clientPart = client.customId || `client-${client._id.toString().slice(-3)}`;
+    const invoiceNumber = `${clientPart}-invoice-${(invoiceCount + 1).toString().padStart(3, '0')}`;
+
     const invoice = await Invoice.create({
       ...invoiceData,
+      invoiceNumber,
       client: client.toObject(),
-      companyName: client.companyName || client.name, // Store the company name
-      clientName: client.name // Store the client name as well
+      companyName: client.companyName || client.name,
+      clientName: client.name
     });
 
     await Client.findByIdAndUpdate(client._id, {
