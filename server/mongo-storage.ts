@@ -51,7 +51,7 @@ export class MongoStorage implements IStorage {
     
     // Return company details stored on the admin document
     return {
-      name: admin.companyName || admin.name || "My Company",
+      name: admin.companyName || (admin as any).name || "My Company",
       address: admin.address || "",
       gst: admin.gst || "",
       phone: admin.phone || "",

@@ -129,8 +129,8 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {invoices?.slice(0, 5).map((invoice) => (
-                <div key={invoice.id} className="flex items-center justify-between border-b border-border/50 pb-2 last:border-0 last:pb-0">
+              {invoices?.slice(0, 5).map((invoice, index) => (
+                <div key={invoice._id || index} className="flex items-center justify-between border-b border-border/50 pb-2 last:border-0 last:pb-0">
                   <div className="space-y-1">
                     <p className="text-sm font-medium leading-none">{invoice.client?.name}</p>
                     <p className="text-xs text-muted-foreground">{invoice.invoiceNumber}</p>
