@@ -5,7 +5,7 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./mongo-storage";
-import { User } from "@shared/mongo-schema";
+import { Admin } from "@shared/mongo-schema";
 
 const scryptAsync = promisify(scrypt);
 
@@ -54,10 +54,14 @@ export function setupAuth(app: Express) {
     }),
   );
 
-  passport.serializeUser((user, done) => done(null, (user as any)._id));
+  passport.serializeUser((user: any, done) => done(null, user._id));
   passport.deserializeUser(async (id: string, done) => {
-    const user = await storage.getUser(id);
-    done(null, user);
+    try {
+      const user = await storage.getUser(id);
+      done(null, user);
+    } catch (err) {
+      done(err);
+    }
   });
 
   app.post("/api/register", async (req, res, next) => {
