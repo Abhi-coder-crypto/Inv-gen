@@ -35,19 +35,14 @@ export default function Dashboard() {
     return { name: monthKey, total: monthlyTotal };
   });
 
-  const StatCard = ({ title, value, icon: Icon, desc, color }: any) => (
+  const StatCard = ({ title, value, desc }: any) => (
     <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border-none bg-white dark:bg-slate-900 shadow-sm">
       <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div className={`h-12 w-12 rounded-2xl ${color || 'bg-primary/10 text-primary'} flex items-center justify-center shadow-inner`}>
-            <Icon className="h-6 w-6" />
-          </div>
-          {desc && <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">{desc}</span>}
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm font-semibold text-muted-foreground">{title}</p>
+          {desc && <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 bg-slate-50 dark:bg-slate-800 px-2 py-0.5 rounded">{desc}</span>}
         </div>
-        <div className="mt-4">
-          <p className="text-sm font-semibold text-muted-foreground mb-1">{title}</p>
-          <h3 className="text-3xl font-bold font-display tracking-tight text-slate-900 dark:text-white">{value}</h3>
-        </div>
+        <h3 className="text-3xl font-bold font-display tracking-tight text-slate-900 dark:text-white">{value}</h3>
       </CardContent>
     </Card>
   );
@@ -70,29 +65,21 @@ export default function Dashboard() {
         <StatCard 
           title="Total Revenue" 
           value={`₹${totalRevenue.toLocaleString()}`} 
-          icon={DollarSign}
-          color="bg-emerald-500/10 text-emerald-600"
           desc="Settled"
         />
         <StatCard 
           title="Outstanding" 
           value={`₹${pendingAmount.toLocaleString()}`} 
-          icon={Clock}
-          color="bg-amber-500/10 text-amber-600"
           desc="Invoiced"
         />
         <StatCard 
           title="Documents" 
           value={totalInvoices} 
-          icon={FileText}
-          color="bg-blue-500/10 text-blue-600"
           desc="Generated"
         />
         <StatCard 
           title="Partner Clients" 
           value={totalClients} 
-          icon={Users}
-          color="bg-violet-500/10 text-violet-600"
           desc="Registered"
         />
       </div>
