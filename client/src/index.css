@@ -91,6 +91,10 @@
     size: auto;
   }
   
+  @page {
+    margin: 0 !important;
+  }
+  
   /* Hide browser default header and footer (URLs/Dates) */
   html, body {
     height: auto !important;
