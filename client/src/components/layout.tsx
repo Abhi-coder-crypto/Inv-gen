@@ -29,47 +29,58 @@ export function Layout({ children }: { children: React.ReactNode }) {
   ];
 
   const Sidebar = () => (
-    <div className="flex flex-col h-full bg-card border-r border-border">
-      <div className="p-6 flex items-center gap-3">
-        <img src={logoUrl} alt="Invoice-Gen Logo" className="h-10 w-auto object-contain" />
-        <span className="font-display font-bold text-xl tracking-tight">Invoice-Gen</span>
+    <div className="flex flex-col h-full bg-slate-900 text-slate-300 border-r border-slate-800">
+      <div className="p-6 flex items-center gap-3 border-b border-slate-800 bg-slate-900/50">
+        <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center p-2 border border-primary/20">
+          <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
+        </div>
+        <div className="flex flex-col">
+          <span className="font-display font-bold text-lg tracking-tight text-white leading-none">Invoice-Gen</span>
+          <span className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">Business Portal</span>
+        </div>
       </div>
 
-      <nav className="flex-1 px-4 space-y-1 mt-4">
+      <nav className="flex-1 px-4 space-y-1.5 mt-6">
         {navigation.map((item) => {
           const isActive = location === item.href;
           return (
             <Link key={item.name} href={item.href}>
               <div 
                 className={`
-                  flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200
+                  flex items-center gap-3 px-4 py-2.5 rounded-lg cursor-pointer transition-all duration-200 group
                   ${isActive 
-                    ? 'bg-primary/10 text-primary font-medium' 
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                    ? 'bg-primary text-white shadow-lg shadow-primary/20' 
+                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
                   }
                 `}
                 onClick={() => setIsOpen(false)}
               >
-                <item.icon className="h-5 w-5" />
-                {item.name}
+                <item.icon className={`h-4.5 w-4.5 transition-colors ${isActive ? 'text-white' : 'group-hover:text-primary'}`} />
+                <span className="text-sm font-medium">{item.name}</span>
+                {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
             </Link>
           );
         })}
       </nav>
 
-      <div className="p-4 border-t border-border">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <Avatar className="h-9 w-9 border border-border">
-            <AvatarFallback className="bg-primary/10 text-primary">
+      <div className="p-4 bg-slate-950/50 border-t border-slate-800">
+        <div className="flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-900/50 border border-slate-800">
+          <Avatar className="h-9 w-9 border-2 border-slate-700">
+            <AvatarFallback className="bg-slate-800 text-slate-200 text-xs">
               {user?.username.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{user?.username}</p>
-            <p className="text-xs text-muted-foreground truncate">{user?.role}</p>
+            <p className="text-sm font-semibold text-white truncate">{user?.username}</p>
+            <p className="text-[10px] text-slate-500 uppercase font-bold tracking-tight">{user?.role}</p>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => logout()} className="h-8 w-8 text-muted-foreground hover:text-destructive">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => logout()} 
+            className="h-8 w-8 text-slate-500 hover:text-red-400 hover:bg-red-400/10"
+          >
             <LogOut className="h-4 w-4" />
           </Button>
         </div>

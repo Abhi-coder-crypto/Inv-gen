@@ -234,7 +234,7 @@ export default function Clients() {
                     {client.companyName && (
                       <p className="text-xs text-primary font-medium truncate">{client.companyName}</p>
                     )}
-                    <p className="text-[10px] text-muted-foreground">ID: #{client.id || (client as any)._id}</p>
+                    <p className="text-[10px] text-muted-foreground">ID: #{(client as any).customId || client.id}</p>
                   </div>
                 </div>
                 <div className="space-y-2 text-sm text-muted-foreground">
