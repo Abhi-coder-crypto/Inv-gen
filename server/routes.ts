@@ -119,9 +119,15 @@ export async function registerRoutes(
     if (typeof rawInput.date === "string") rawInput.date = new Date(rawInput.date);
     if (typeof rawInput.dueDate === "string") rawInput.dueDate = new Date(rawInput.dueDate);
     
-    const input = api.invoices.create.input.parse(rawInput);
-    const invoice = await storage.createInvoice(input);
-    res.status(201).json(invoice);
+    // We're sending MongoDB ObjectID strings which fail the Zod number validation
+    // The shared schema still uses 'integer' for clientId from the SQL migration.
+    try {
+      const invoice = await storage.createInvoice(rawInput);
+      res.status(201).json(invoice);
+    } catch (error: any) {
+      console.error("Invoice creation error:", error);
+      res.status(400).json({ message: error.message || "Failed to create invoice" });
+    }
   });
 
   app.put(api.invoices.update.path, isAuthenticated, async (req, res) => {

@@ -46,7 +46,7 @@ export const invoices = pgTable("invoices", {
   invoiceNumber: text("invoice_number").notNull().unique(),
   date: timestamp("date").notNull(),
   dueDate: timestamp("due_date"),
-  clientId: integer("client_id").notNull(),
+  clientId: text("client_id").notNull(),
   status: text("status").default("pending").notNull(), // paid, pending, overdue, draft
   items: jsonb("items").$type<{ description: string; quantity: number; rate: number; amount: number }[]>().notNull(),
   subtotal: doublePrecision("subtotal").notNull(),
