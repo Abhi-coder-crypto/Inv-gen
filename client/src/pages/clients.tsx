@@ -3,13 +3,13 @@ import { Link } from "wouter";
 import { useClients, useCreateClient } from "@/hooks/use-clients";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertClientSchema } from "@shared/schema";
-import { Search, Plus, User, Phone, Mail, MapPin, Upload, Briefcase, Building2 } from "lucide-react";
+import { Search, Plus, User, Phone, Mail, MapPin, Upload, Briefcase, Building2, X } from "lucide-react";
 import type { InsertClient } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 
@@ -83,126 +83,161 @@ export default function Clients() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-display font-bold text-foreground">Clients</h2>
-          <p className="text-muted-foreground mt-1">Manage your customer base.</p>
+          <h2 className="text-4xl font-display font-black text-slate-900 dark:text-white tracking-tight">Clients</h2>
+          <p className="text-slate-500 font-medium mt-1">Manage your customer base and service partnerships.</p>
         </div>
         
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button className="shadow-lg shadow-primary/20">
-              <Plus className="mr-2 h-4 w-4" /> Add Client
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Client</DialogTitle>
-            </DialogHeader>
+        {!isOpen && (
+          <Button 
+            onClick={() => setIsOpen(true)}
+            className="shadow-xl shadow-primary/20 bg-primary hover:bg-primary/90 text-white px-6 h-11 rounded-xl transition-all hover:scale-105 active:scale-95"
+          >
+            <Plus className="mr-2 h-5 w-5" /> Add New Client
+          </Button>
+        )}
+      </div>
+
+      {isOpen && (
+        <Card className="border-none shadow-xl animate-in slide-in-from-top-4 duration-500 overflow-hidden bg-white dark:bg-slate-900">
+          <CardHeader className="bg-slate-50/50 dark:bg-slate-800/50 border-b p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-xl font-bold">New Client Registration</CardTitle>
+                <CardDescription className="font-medium">Enter the details for the new business partner.</CardDescription>
+              </div>
+              <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="h-20 w-20 border rounded bg-muted flex items-center justify-center overflow-hidden">
-                    {form.watch("logoUrl") ? (
-                      <img src={form.watch("logoUrl")!} alt="Client Logo" className="w-full h-full object-contain" />
-                    ) : (
-                      <Upload className="h-8 w-8 text-muted-foreground" />
-                    )}
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div className="flex flex-col md:flex-row gap-8 items-start">
+                  <div className="space-y-4">
+                    <FormLabel className="text-sm font-bold uppercase tracking-wider text-slate-500">Client Visuals</FormLabel>
+                    <div className="flex flex-col items-center gap-4 p-6 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50/50 dark:bg-slate-950/50 transition-colors hover:border-primary/50 group">
+                      <div className="h-32 w-32 border-2 border-white dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-xl flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
+                        {form.watch("logoUrl") ? (
+                          <img src={form.watch("logoUrl")!} alt="Client Logo" className="w-full h-full object-contain p-2" />
+                        ) : (
+                          <Building2 className="h-12 w-12 text-slate-200" />
+                        )}
+                      </div>
+                      <div className="w-full">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileUpload}
+                          disabled={uploading}
+                          className="hidden"
+                          id="client-logo-upload"
+                        />
+                        <label 
+                          htmlFor="client-logo-upload"
+                          className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-50 transition-colors shadow-sm"
+                        >
+                          <Upload className="h-4 w-4" />
+                          {uploading ? "Processing..." : "Upload Logo"}
+                        </label>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <FormLabel>Client Logo</FormLabel>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      disabled={uploading}
-                      className="cursor-pointer text-xs"
+
+                  <div className="flex-1 grid gap-6 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-bold">Contact Person Name</FormLabel>
+                          <FormControl><Input {...field} className="h-11 rounded-xl border-slate-200 focus:border-primary focus:ring-primary/20" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
+                    <FormField
+                      control={form.control}
+                      name="companyName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-bold">Business Entity Name</FormLabel>
+                          <FormControl><Input {...field} value={field.value || ''} className="h-11 rounded-xl border-slate-200 focus:border-primary focus:ring-primary/20" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="serviceName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-bold">Professional Service</FormLabel>
+                          <FormControl><Input {...field} value={field.value || ''} placeholder="e.g. Enterprise Solutions" className="h-11 rounded-xl border-slate-200 focus:border-primary focus:ring-primary/20" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="gst"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-bold">Tax Registration (GST)</FormLabel>
+                          <FormControl><Input {...field} value={field.value || ''} className="h-11 rounded-xl border-slate-200 focus:border-primary focus:ring-primary/20" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-bold">Communication Email</FormLabel>
+                          <FormControl><Input type="email" {...field} value={field.value || ''} className="h-11 rounded-xl border-slate-200 focus:border-primary focus:ring-primary/20" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="phone"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="font-bold">Direct Phone Number</FormLabel>
+                          <FormControl><Input {...field} value={field.value || ''} className="h-11 rounded-xl border-slate-200 focus:border-primary focus:ring-primary/20" /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="md:col-span-2">
+                      <FormField
+                        control={form.control}
+                        name="address"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="font-bold">Physical Address</FormLabel>
+                            <FormControl><Input {...field} value={field.value || ''} className="h-11 rounded-xl border-slate-200 focus:border-primary focus:ring-primary/20" /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </div>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Client Name</FormLabel>
-                      <FormControl><Input {...field} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="companyName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Company Name</FormLabel>
-                      <FormControl><Input {...field} value={field.value || ''} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="serviceName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Service Provided</FormLabel>
-                      <FormControl><Input {...field} value={field.value || ''} placeholder="e.g. Digital Marketing" /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl><Input type="email" {...field} value={field.value || ''} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone</FormLabel>
-                      <FormControl><Input {...field} value={field.value || ''} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl><Input {...field} value={field.value || ''} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="gst"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>GST / Tax ID</FormLabel>
-                      <FormControl><Input {...field} value={field.value || ''} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="w-full" disabled={isPending}>
-                  {isPending ? "Creating..." : "Create Client"}
-                </Button>
+                
+                <div className="flex items-center justify-end gap-3 pt-6 border-t">
+                  <Button type="button" variant="ghost" onClick={() => setIsOpen(false)} className="px-6 h-11 rounded-xl font-bold">Cancel</Button>
+                  <Button type="submit" className="px-8 h-11 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/20 transition-all hover:scale-105 active:scale-95" disabled={isPending}>
+                    {isPending ? "Syncing..." : "Confirm & Register Client"}
+                  </Button>
+                </div>
               </form>
             </Form>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
