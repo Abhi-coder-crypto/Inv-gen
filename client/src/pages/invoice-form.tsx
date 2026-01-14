@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertInvoiceSchema } from "@shared/schema";
-import { useCreateInvoice } from "@/hooks/use-invoices";
+import { useCreateInvoice, useInvoices } from "@/hooks/use-invoices";
 import { useClients } from "@/hooks/use-clients";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,11 +37,12 @@ export default function InvoiceForm() {
   const [, setLocation] = useLocation();
   const { mutate: createInvoice, isPending } = useCreateInvoice();
   const { data: clients } = useClients();
+  const { data: invoices } = useInvoices();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      invoiceNumber: `INV-${Math.floor(Math.random() * 10000)}`,
+      invoiceNumber: "",
       description: "",
       date: new Date(),
       status: 'pending',
@@ -52,6 +53,26 @@ export default function InvoiceForm() {
       total: 0,
     }
   });
+
+  const selectedClientId = form.watch("clientId");
+
+  useEffect(() => {
+    if (!selectedClientId || !clients || !invoices) return;
+
+    const client = clients.find(c => (c.id || (c as any)._id).toString() === selectedClientId.toString());
+    if (!client) return;
+
+    const clientInvoices = invoices.filter(inv => 
+      (inv.clientId?.toString() === selectedClientId.toString()) || 
+      ((inv as any).clientId?._id?.toString() === selectedClientId.toString())
+    );
+
+    const clientPart = (client as any).customId || `client-${(client.id || (client as any)._id).toString().slice(-3)}`;
+    const nextNumber = (clientInvoices.length + 1).toString().padStart(3, '0');
+    const invoiceNumber = `${clientPart}-Inv-${nextNumber}`;
+
+    form.setValue("invoiceNumber", invoiceNumber);
+  }, [selectedClientId, clients, invoices, form]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
