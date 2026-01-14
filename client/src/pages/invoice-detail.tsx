@@ -89,7 +89,6 @@ export default function InvoiceDetail() {
               <div className="flex gap-10 items-start">
                 <img src={logoPng} alt="Company Logo" className="h-40 w-auto object-contain" />
                 <div className="space-y-1.5">
-                  <h1 className="text-3xl font-bold tracking-tight text-black">{company?.name || "Your Company"}</h1>
                   <div className="text-sm text-black space-y-0.5">
                     <p className="whitespace-pre-wrap max-w-sm">{company?.address}</p>
                     {company?.phone && <p>Phone: <span className="text-black font-medium">{company.phone}</span></p>}
@@ -103,12 +102,6 @@ export default function InvoiceDetail() {
                 <div className="space-y-1">
                   <p className="text-black text-xs uppercase font-bold tracking-wider">Invoice Number</p>
                   <p className="text-xl font-mono font-bold text-black">{invoice.invoiceNumber}</p>
-                  {invoice.description && (
-                    <div className="pt-2">
-                      <p className="text-black text-xs uppercase font-bold tracking-wider">Description</p>
-                      <p className="text-sm font-medium text-black">{invoice.description}</p>
-                    </div>
-                  )}
                   <div className="pt-2 flex flex-col items-end gap-1 text-sm">
                     <p className="text-black">Issued: <span className="text-black font-semibold">{format(new Date(invoice.date), 'MMMM dd, yyyy')}</span></p>
                     <p className="text-black">Due: <span className="text-black font-semibold">{invoice.dueDate ? format(new Date(invoice.dueDate), 'MMMM dd, yyyy') : 'On Receipt'}</span></p>
@@ -141,6 +134,12 @@ export default function InvoiceDetail() {
                   </div>
                 </div>
               </div>
+              {invoice.description && (
+                <div className="pt-4 border-t border-slate-100">
+                  <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest mb-1">Description</p>
+                  <p className="text-sm font-medium text-slate-700 leading-relaxed">{invoice.description}</p>
+                </div>
+              )}
             </div>
             <div className="flex flex-col items-end justify-start space-y-4">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Status</h3>
