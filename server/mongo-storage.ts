@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import { User, Company, Client, Invoice } from "@shared/mongo-schema";
+import { Admin, Client, Invoice } from "@shared/mongo-schema";
 import type { IStorage } from "./storage";
 
 export class MongoStorage implements IStorage {
@@ -16,86 +16,93 @@ export class MongoStorage implements IStorage {
   }
 
   private async initAdmin() {
-    const admin = await User.findOne({ username: "admin" });
+    const admin = await Admin.findOne({ username: "admin" });
     if (!admin) {
-      await User.create({
+      await Admin.create({
         username: "admin",
-        password: "admin123", // In a real app, this should be hashed
+        password: "admin123",
         role: "admin"
       });
     }
   }
 
   async getUser(id: any): Promise<any> {
-    return User.findById(id);
+    return Admin.findById(id);
   }
 
   async getUserByUsername(username: string): Promise<any> {
-    return User.findOne({ username });
+    return Admin.findOne({ username });
   }
 
   async createUser(user: any): Promise<any> {
-    return User.create(user);
+    return Admin.create(user);
   }
 
   async getCompany(): Promise<any> {
-    return Company.findOne();
+    // For this specific structure, we'll keep company details separate or treat Admin as the company owner
+    return Admin.findOne({ role: "admin" });
   }
 
   async updateCompany(company: any): Promise<any> {
-    const existing = await this.getCompany();
-    if (existing) {
-      return Company.findByIdAndUpdate(existing._id, company, { new: true });
-    }
-    return Company.create(company);
+    return Admin.findOneAndUpdate({ role: "admin" }, company, { new: true });
   }
 
   async getClients(): Promise<any[]> {
-    return Client.find().sort({ createdAt: -1 });
+    return Client.find().populate('invoices').sort({ createdAt: -1 });
   }
 
   async getClient(id: any): Promise<any> {
-    return Client.findById(id);
+    return Client.findById(id).populate('invoices');
   }
 
-  async createClient(client: any): Promise<any> {
-    return Client.create(client);
+  async createClient(clientData: any): Promise<any> {
+    return Client.create(clientData);
   }
 
-  async updateClient(id: any, client: any): Promise<any> {
-    return Client.findByIdAndUpdate(id, client, { new: true });
+  async updateClient(id: any, clientData: any): Promise<any> {
+    return Client.findByIdAndUpdate(id, clientData, { new: true });
   }
 
   async getInvoices(): Promise<any[]> {
-    const invoices = await Invoice.find().populate('clientId').sort({ createdAt: -1 });
-    return invoices.map(inv => ({
-      ...inv.toObject(),
-      client: inv.clientId,
-      id: inv._id
-    }));
+    return Invoice.find().sort({ createdAt: -1 });
   }
 
   async getInvoice(id: any): Promise<any> {
-    const invoice = await Invoice.findById(id).populate('clientId');
-    if (!invoice) return undefined;
-    return {
-      ...invoice.toObject(),
-      client: invoice.clientId,
-      id: invoice._id
-    };
+    return Invoice.findById(id);
   }
 
-  async createInvoice(invoice: any): Promise<any> {
-    return Invoice.create(invoice);
+  async createInvoice(invoiceData: any): Promise<any> {
+    const client = await Client.findById(invoiceData.clientId);
+    if (!client) throw new Error("Client not found");
+
+    const invoice = await Invoice.create({
+      ...invoiceData,
+      client: client.toObject() // Embed client in invoice
+    });
+
+    // Add invoice reference to client
+    await Client.findByIdAndUpdate(client._id, {
+      $push: { invoices: invoice._id }
+    });
+
+    return invoice;
   }
 
-  async updateInvoice(id: any, invoice: any): Promise<any> {
-    return Invoice.findByIdAndUpdate(id, invoice, { new: true });
+  async updateInvoice(id: any, invoiceData: any): Promise<any> {
+    return Invoice.findByIdAndUpdate(id, invoiceData, { new: true });
   }
 
   async deleteInvoice(id: any): Promise<boolean> {
-    const result = await Invoice.findByIdAndDelete(id);
-    return !!result;
+    const invoice = await Invoice.findById(id);
+    if (!invoice) return false;
+
+    // Remove reference from client
+    await Client.findByIdAndUpdate(invoice.clientId, {
+      $pull: { invoices: id }
+    });
+
+    await Invoice.findByIdAndDelete(id);
+    return true;
   }
 }
 

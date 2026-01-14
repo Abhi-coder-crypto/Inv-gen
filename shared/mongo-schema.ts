@@ -1,28 +1,14 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema({
+// Admin Schema
+const adminSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, default: "admin", required: true },
   createdAt: { type: Date, default: Date.now },
 });
 
-const companySchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  address: { type: String, required: true },
-  gst: String,
-  phone: String,
-  email: String,
-  website: String,
-  bankName: String,
-  accountNumber: String,
-  ifsc: String,
-  upiId: String,
-  logoUrl: String,
-  qrCodeUrl: String,
-  paymentTerms: String,
-});
-
+// Client Schema (Embedded in Invoices or referenced)
 const clientSchema = new mongoose.Schema({
   name: { type: String, required: true },
   companyName: String,
@@ -33,12 +19,18 @@ const clientSchema = new mongoose.Schema({
   gst: String,
   logoUrl: String,
   createdAt: { type: Date, default: Date.now },
+  invoices: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Invoice' }]
 });
 
+// Invoice Schema
 const invoiceSchema = new mongoose.Schema({
   invoiceNumber: { type: String, required: true, unique: true },
   date: { type: Date, required: true },
   dueDate: Date,
+  client: { 
+    type: clientSchema, // Embedding client info directly as requested
+    required: true 
+  },
   clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
   status: { type: String, default: "pending", required: true },
   items: [{
@@ -56,8 +48,7 @@ const invoiceSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export const User = mongoose.model("User", userSchema);
-export const Company = mongoose.model("Company", companySchema);
+export const Admin = mongoose.model("Admin", adminSchema);
 export const Client = mongoose.model("Client", clientSchema);
 export const Invoice = mongoose.model("Invoice", invoiceSchema);
 
