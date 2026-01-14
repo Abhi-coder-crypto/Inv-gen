@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Printer, Download, Mail, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import logoPng from "@assets/ATLOGOPNGNOBG_1768370218283.png";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,7 +21,7 @@ import {
 
 export default function InvoiceDetail() {
   const [, params] = useRoute("/invoices/:id");
-  const id = Number(params?.id);
+  const id = params?.id;
   const { data: invoice, isLoading } = useInvoice(id);
   const { data: company } = useCompany();
   const { mutate: deleteInvoice } = useDeleteInvoice();
@@ -86,13 +87,7 @@ export default function InvoiceDetail() {
           <div className="bg-white p-10 border-b">
             <div className="flex justify-between items-start">
               <div className="flex gap-10 items-start">
-                {company?.logoUrl ? (
-                  <img src={company.logoUrl} alt={company.name} className="h-40 w-auto object-contain" />
-                ) : (
-                  <div className="h-24 w-24 bg-primary rounded flex items-center justify-center text-primary-foreground font-bold text-4xl">
-                    {company?.name ? company.name.charAt(0) : "I"}
-                  </div>
-                )}
+                <img src={logoPng} alt="Company Logo" className="h-40 w-auto object-contain" />
                 <div className="space-y-1.5">
                   <h1 className="text-3xl font-bold tracking-tight text-black">{company?.name || "Your Company"}</h1>
                   <div className="text-sm text-black space-y-0.5">
