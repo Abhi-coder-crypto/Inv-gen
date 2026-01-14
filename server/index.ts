@@ -2,6 +2,15 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import mongoose from "mongoose";
+
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI environment variable is required");
+}
+
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 const app = express();
 const httpServer = createServer(app);

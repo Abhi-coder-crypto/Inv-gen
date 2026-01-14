@@ -43,3 +43,8 @@ outputType = "webview"
 
 [agent]
 expertMode = true
+
+[userenv]
+
+[userenv.shared]
+MONGODB_URI = "mongodb+srv://abhijeet18012001_db_user:PpeVgGkcIfcntGgI@invoice.thqjkyw.mongodb.net/?appName=Invoice"
