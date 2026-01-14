@@ -32,6 +32,8 @@ const invoiceSchema = new mongoose.Schema({
     required: true 
   },
   clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
+  companyName: String,
+  clientName: String,
   status: { type: String, default: "pending", required: true },
   items: [{
     description: String,

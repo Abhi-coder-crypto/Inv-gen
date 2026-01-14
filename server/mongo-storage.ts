@@ -83,7 +83,9 @@ export class MongoStorage implements IStorage {
 
     const invoice = await Invoice.create({
       ...invoiceData,
-      client: client.toObject()
+      client: client.toObject(),
+      companyName: client.companyName || client.name, // Store the company name
+      clientName: client.name // Store the client name as well
     });
 
     await Client.findByIdAndUpdate(client._id, {
