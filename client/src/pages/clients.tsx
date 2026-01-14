@@ -217,48 +217,50 @@ export default function Clients() {
         {isLoading && [1,2,3].map(i => <div key={i} className="h-40 bg-card rounded-xl animate-pulse" />)}
         
         {filteredClients?.map((client) => (
-          <Card key={client.id} className="hover:border-primary/50 transition-colors cursor-pointer group">
-            <CardContent className="p-6 space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-lg bg-secondary flex items-center justify-center text-secondary-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors overflow-hidden">
-                  {client.logoUrl ? (
-                    <img src={client.logoUrl} alt={client.name} className="w-full h-full object-contain" />
-                  ) : (
-                    <User className="h-6 w-6" />
+          <Link key={client.id || (client as any)._id} href={`/clients/${client.id || (client as any)._id}`}>
+            <Card className="hover:border-primary/50 transition-colors cursor-pointer group">
+              <CardContent className="p-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-lg bg-secondary flex items-center justify-center text-secondary-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors overflow-hidden">
+                    {client.logoUrl ? (
+                      <img src={client.logoUrl} alt={client.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <User className="h-6 w-6" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold truncate">{client.name}</h4>
+                    {client.companyName && (
+                      <p className="text-xs text-primary font-medium truncate">{client.companyName}</p>
+                    )}
+                    <p className="text-[10px] text-muted-foreground">ID: #{client.id || (client as any)._id}</p>
+                  </div>
+                </div>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  {client.serviceName && (
+                    <div className="flex items-center gap-2 text-foreground font-medium bg-primary/5 p-2 rounded-md">
+                      <Briefcase className="h-3 w-3" /> {client.serviceName}
+                    </div>
+                  )}
+                  {client.email && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-3 w-3" /> {client.email}
+                    </div>
+                  )}
+                  {client.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-3 w-3" /> {client.phone}
+                    </div>
+                  )}
+                  {client.address && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-3 w-3" /> <span className="truncate">{client.address}</span>
+                    </div>
                   )}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold truncate">{client.name}</h4>
-                  {client.companyName && (
-                    <p className="text-xs text-primary font-medium truncate">{client.companyName}</p>
-                  )}
-                  <p className="text-[10px] text-muted-foreground">ID: #{client.id}</p>
-                </div>
-              </div>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                {client.serviceName && (
-                  <div className="flex items-center gap-2 text-foreground font-medium bg-primary/5 p-2 rounded-md">
-                    <Briefcase className="h-3 w-3" /> {client.serviceName}
-                  </div>
-                )}
-                {client.email && (
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-3 w-3" /> {client.email}
-                  </div>
-                )}
-                {client.phone && (
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-3 w-3" /> {client.phone}
-                  </div>
-                )}
-                {client.address && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-3 w-3" /> <span className="truncate">{client.address}</span>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>

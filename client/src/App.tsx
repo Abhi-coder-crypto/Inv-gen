@@ -14,6 +14,7 @@ import Invoices from "@/pages/invoices";
 import InvoiceForm from "@/pages/invoice-form";
 import InvoiceDetail from "@/pages/invoice-detail";
 import Clients from "@/pages/clients";
+import ClientDetail from "@/pages/client-detail";
 import Settings from "@/pages/settings";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
@@ -56,6 +57,9 @@ function Router() {
       </Route>
       <Route path="/clients">
         <ProtectedRoute component={Clients} />
+      </Route>
+      <Route path="/clients/:id">
+        <ProtectedRoute component={ClientDetail} />
       </Route>
       <Route path="/settings">
         <ProtectedRoute component={Settings} />
